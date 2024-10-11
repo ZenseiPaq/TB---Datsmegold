@@ -11,6 +11,7 @@ public class TurnManager : MonoBehaviour
     public List<GameObject> enemies;  
     private int currentEnemyIndex = 0;
     public BannerManager bannerManager;
+    public MenuManager menuManager;
 
     private Coroutine currentCoroutine;
     public enum TurnState
@@ -34,18 +35,17 @@ public class TurnManager : MonoBehaviour
     }
     private void Start()
     {
-        Debug.Log("Turn Manager Initialized");
         StartPlayerTurn();
     }
     void StartPlayerTurn()
-    {
-        Debug.Log("Player's Turn");
-        state = TurnState.PlayerTurn;
+    {   
+        menuManager.StartTurn();
+        state = TurnState.PlayerTurn;        
     }
 
    public void EndPlayerTurn()
     {        
-        StartEnemyTurn();
+        StartEnemyTurn();        
         bannerManager.ShowBanner("Their Turn");
     }
 
@@ -53,7 +53,7 @@ public class TurnManager : MonoBehaviour
     {
         state = TurnState.EnemyTurn;
         Debug.Log("Enemy's Turn");
-        
+        menuManager.HideAbilityMenu();
     }
 
     public void EndEnemyTurn()
