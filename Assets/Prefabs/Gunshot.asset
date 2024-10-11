@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12cde338d37699a499dccacb35708e05, type: 3}
-  m_Name: GunShot
+  m_Script: {fileID: 11500000, guid: 3df8db8ea30c7f74c896631890798d8f, type: 3}
+  m_Name: Gunshot
   m_EditorClassIdentifier: 
-  abilityName: GunShot
-  description: Fires a single bullet at the enemy
+  abilityName: Gunshot
+  description: Fire a bullet
   icon: {fileID: 21300000, guid: 0c15526555fc08a4ba99c68434663267, type: 3}
+  projectilePrefab: {fileID: 5095747283219384651, guid: de1f4c33ba2a3c345b9d1535ddbe1d9b, type: 3}
+  projectileSpeed: 10
