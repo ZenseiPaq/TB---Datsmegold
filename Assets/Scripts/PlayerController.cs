@@ -15,7 +15,13 @@ public class PlayerController : MonoBehaviour
     public Transform buttonParent;
     private Ability selectedAbility;
     public TurnManager turnManager;
+    public HealAbility Healing;
+    public Damageable playerDamageable;
 
+    private void Start()
+    {
+        playerDamageable = GetComponent<Damageable>();
+    }
 
     void Update()
     {
@@ -29,6 +35,22 @@ public class PlayerController : MonoBehaviour
     {
         selectedAbility = ability; // Set the selected ability
         Debug.Log("Selected Ability: " + selectedAbility.abilityName);
+    }
+
+    public void SelectAbility(Ability ability)
+    {
+        selectedAbility = ability;
+        Debug.Log("Selected Ability: " + selectedAbility.abilityName);
+
+        if (selectedAbility is HealAbility)
+        {
+            UseAbilityOnSelf();
+            return; // Early exit to prevent creating enemy buttons
+        }
+        else
+        {
+            CreateEnemyButtons(); // Create buttons only for non-heal abilities
+        }
     }
 
     public void CreateEnemyButtons()
@@ -54,11 +76,7 @@ public class PlayerController : MonoBehaviour
             newButton.GetComponent<Button>().onClick.AddListener(() => SelectEnemy(localEnemy.transform));
         }
     }
-    public void SelectAbility(Ability ability)
-    {
-        selectedAbility = ability;
-        CreateEnemyButtons();
-    }
+
     public void SelectEnemy(Transform enemy)
     {
         targetEnemy = enemy;
@@ -68,19 +86,22 @@ public class PlayerController : MonoBehaviour
 
     void UseAbilityOnTarget()
     {
-        if (selectedAbility != null && targetEnemy != null)
+        if (selectedAbility is GunshotAbility gunshotAbility && targetEnemy != null)
         {
-            Debug.Log("Using ability: " + selectedAbility.abilityName + " on " + targetEnemy.name);
-
-            if (selectedAbility is GunshotAbility gunshotAbility)
-            {
-                gunshotAbility.Use(targetEnemy);
-            }
-            targetEnemy = null;
-            turnManager.EndPlayerTurn();
-            buttonParent.gameObject.SetActive(false);
+            gunshotAbility.Use(targetEnemy);
         }
-       
+        targetEnemy = null;
+        turnManager.EndPlayerTurn();
+        buttonParent.gameObject.SetActive(false);
+    }
+
+    public void UseAbilityOnSelf()
+    {
+        if (selectedAbility is HealAbility healAbility)
+        {
+            healAbility.Use(playerDamageable);
+            turnManager.EndPlayerTurn();
+        }
     }
 
     void RotateTowardsEnemy(Transform enemy)
@@ -90,4 +111,3 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
     }
 }
-

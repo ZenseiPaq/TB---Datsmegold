@@ -13,6 +13,9 @@ public class TurnManager : MonoBehaviour
     private int currentEnemyIndex = 0;
     public BannerManager bannerManager;
     public MenuManager menuManager;
+    public PlayerController playerController;
+    public Damageable damageable;
+    public List<Damageable> allUnits;
 
     private Coroutine currentCoroutine;
 
@@ -77,8 +80,14 @@ public class TurnManager : MonoBehaviour
 
     void StartPlayerTurn()
     {
-            menuManager.ShowAbilityMenu();
-            state = TurnState.PlayerTurn;
+        bannerManager.ShowBanner("Your turn");
+        StartCoroutine(StartPlayerTurnWithDelay());
+    }
+    IEnumerator StartPlayerTurnWithDelay()
+    {
+        yield return new WaitForSeconds(2f);
+        menuManager.ShowAbilityMenu();
+        state = TurnState.PlayerTurn;
     }
 
     public void EndPlayerTurn()
@@ -88,11 +97,41 @@ public class TurnManager : MonoBehaviour
 
     void StartEnemyTurn()
     {
-
-            bannerManager.ShowBanner("Their Turn");
+        if (enemies.Count > 0)
+        {
             state = TurnState.EnemyTurn;
             Debug.Log("Enemy's Turn");
-            menuManager.HideAbilityMenu();       
+            if (currentEnemyIndex == 0)
+            {
+                bannerManager.ShowBanner("Their Turn");
+            }
+
+            StartCoroutine(EnemyTurnRoutine());
+        }
+        else
+        {
+            HandleVictory();
+            StopCoroutine(EnemyTurnRoutine());
+        }
+    }
+
+    IEnumerator EnemyTurnRoutine()
+    {
+        enemies.RemoveAll(enemy => enemy == null);
+
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            GameObject currentEnemy = enemies[i];
+            if (currentEnemy == null)
+            {
+                Debug.LogWarning("Enemy at index " + i + " is null, skipping.");
+                continue; 
+            }
+            Debug.Log($"Enemy {currentEnemy.name} is taking their turn");
+            yield return new WaitForSeconds(1f);
+            Debug.Log($"Enemy {currentEnemy.name} finished their turn");
+        }
+        EndEnemyTurn();
     }
 
     public void EndEnemyTurn()
@@ -114,9 +153,10 @@ public class TurnManager : MonoBehaviour
     }
     public void HandleVictory()
     {
+        StopAllCoroutines();
         bannerManager.ShowBanner("Victory");
     }
-    
+
     public void HandleDefeat()
     {
         bannerManager.ShowBanner("Defeat");

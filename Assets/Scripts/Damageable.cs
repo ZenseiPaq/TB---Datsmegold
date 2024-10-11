@@ -23,4 +23,16 @@ public class Damageable : MonoBehaviour
             turnManager.RemoveEnemy(gameObject);
         }
     }
+    public void Healing(int damage)
+    {
+        currentHP = currentHP + damage;
+    }
+
+    public void RemoveOverHealth()
+    {
+        if(currentHP > 100)
+        {
+            currentHP = 100;
+        }
+    }
 }

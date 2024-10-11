@@ -9,12 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12cde338d37699a499dccacb35708e05, type: 3}
-  m_Name: Heal
+  m_Script: {fileID: 11500000, guid: 7a93429c65957ad469e3c32a3e29073c, type: 3}
+  m_Name: Healing
   m_EditorClassIdentifier: 
-  abilityName: Heal
-  description: Heal a random HP amount
-  icon: {fileID: 21300000, guid: e0300eaf56d275a4d9e9b2e29adeca96, type: 3}
-  onUse:
-    m_PersistentCalls:
-      m_Calls: []
+  abilityName: 
+  description: 
+  icon: {fileID: 0}
+  damage: 50

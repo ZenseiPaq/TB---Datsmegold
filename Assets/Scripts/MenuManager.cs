@@ -36,9 +36,18 @@ public class MenuManager : MonoBehaviour
 
     void SelectAbility(Ability ability)
     {
-        // Set the ability in PlayerController and show enemy selection
         playerController.SetSelectedAbility(ability);
-        playerController.CreateEnemyButtons(); // Call to show enemy selection buttons
+
+        if (ability is HealAbility)
+        {
+            Debug.Log("Healing ability selected. Using on player.");
+            playerController.UseAbilityOnSelf();
+            return; 
+        }
+        else
+        {
+            playerController.CreateEnemyButtons();
+        }
         HideAbilityMenu();
     }
 
