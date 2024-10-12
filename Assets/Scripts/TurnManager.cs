@@ -15,7 +15,8 @@ public class TurnManager : MonoBehaviour
     public MenuManager menuManager;
     public PlayerController playerController;
     public Damageable damageable;
-    public List<Damageable> allUnits;
+    public EnemyBehavior enemyBehavior;
+    
 
     private Coroutine currentCoroutine;
 
@@ -117,20 +118,24 @@ public class TurnManager : MonoBehaviour
 
     IEnumerator EnemyTurnRoutine()
     {
-        enemies.RemoveAll(enemy => enemy == null);
-
         for (int i = 0; i < enemies.Count; i++)
         {
             GameObject currentEnemy = enemies[i];
             if (currentEnemy == null)
             {
                 Debug.LogWarning("Enemy at index " + i + " is null, skipping.");
-                continue; 
+                continue;
             }
-            Debug.Log($"Enemy {currentEnemy.name} is taking their turn");
-            yield return new WaitForSeconds(1f);
-            Debug.Log($"Enemy {currentEnemy.name} finished their turn");
+
+            EnemyBehavior enemyController = currentEnemy.GetComponent<EnemyBehavior>();
+            if (enemyController != null)
+            {
+                enemyController.PerformMeleeAttack(); // Call the melee attack method
+            }
+
+            yield return new WaitForSeconds(1f); // Wait for enemy to finish action
         }
+
         EndEnemyTurn();
     }
 
@@ -159,6 +164,8 @@ public class TurnManager : MonoBehaviour
 
     public void HandleDefeat()
     {
+        menuManager.HideAbilityMenu();
         bannerManager.ShowBanner("Defeat");
+        Debug.Log("You lost");
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 public class GunshotAbility : Ability
 {
     public GameObject projectilePrefab;
-    public float projectileSpeed = 10f;
+    public float projectileSpeed = 2f;
     public Transform SelectedEnemy;
     
 

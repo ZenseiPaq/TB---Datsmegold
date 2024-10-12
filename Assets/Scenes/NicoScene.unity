@@ -162,6 +162,9 @@ MonoBehaviour:
   - {fileID: 1030065045}
   bannerManager: {fileID: 26163572}
   menuManager: {fileID: 1300554618}
+  playerController: {fileID: 1905004943}
+  damageable: {fileID: 1905004944}
+  enemyBehavior: {fileID: 1030065046}
 --- !u!4 &26163571
 Transform:
   m_ObjectHideFlags: 0
@@ -1027,6 +1030,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c8cef73238329f4cba8071ff7e89410, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  abilities:
+  - {fileID: 11400000, guid: 4c316c48d55c6124bb02ac6e52e29595, type: 2}
+  moveSpeed: 2
+  player: {fileID: 1905004942}
+  attackRange: 1.5
+  playerController: {fileID: 1905004943}
+  damage: 50
 --- !u!65 &1030065047
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1128,6 +1138,7 @@ MonoBehaviour:
   maxHP: 0
   currentHP: 0
   turnManager: {fileID: 26163570}
+  player: {fileID: 0}
 --- !u!65 &1030065052
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1187,7 +1198,7 @@ MonoBehaviour:
   abilityMenuParent: {fileID: 1029650601}
   playerAbilities:
   - {fileID: 11400000, guid: 6cf33ac77658b054e92e46bc504948a9, type: 2}
-  - {fileID: 11400000, guid: 34a948c768cee4f40850b2bee1c7bb35, type: 2}
+  - {fileID: 11400000, guid: d3d5a88100a348d4fb23e65a945bcfaa, type: 2}
   descriptionText: {fileID: 921979880}
   playerController: {fileID: 1905004943}
 --- !u!4 &1300554619
@@ -1239,6 +1250,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c8cef73238329f4cba8071ff7e89410, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  abilities:
+  - {fileID: 11400000, guid: 4c316c48d55c6124bb02ac6e52e29595, type: 2}
+  moveSpeed: 2
+  player: {fileID: 1905004942}
+  attackRange: 1.5
+  playerController: {fileID: 1905004943}
+  damage: 50
 --- !u!65 &1557835181
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1361,6 +1379,7 @@ MonoBehaviour:
   maxHP: 0
   currentHP: 0
   turnManager: {fileID: 26163570}
+  player: {fileID: 0}
 --- !u!1 &1675776494
 GameObject:
   m_ObjectHideFlags: 0
@@ -1605,6 +1624,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a67a14cc8d7bea64aa8d9c315c6332b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1905004944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905004942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8fba38b3905879489b3cf24f0458dcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHP: 100
+  currentHP: 100
+  turnManager: {fileID: 26163570}
+  player: {fileID: 1905004942}
 --- !u!1 &2034460371
 GameObject:
   m_ObjectHideFlags: 0
@@ -1720,9 +1755,21 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2365612312290727073, guid: 5e24a36b76ac7814bb5fc6ae9749a6e6, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1905004942}
+    - target: {fileID: 2365612312290727073, guid: 5e24a36b76ac7814bb5fc6ae9749a6e6, type: 3}
+      propertyPath: Healing
+      value: 
+      objectReference: {fileID: 11400000, guid: d3d5a88100a348d4fb23e65a945bcfaa, type: 2}
+    - target: {fileID: 2365612312290727073, guid: 5e24a36b76ac7814bb5fc6ae9749a6e6, type: 3}
       propertyPath: firePoint
       value: 
       objectReference: {fileID: 1040922099}
+    - target: {fileID: 2365612312290727073, guid: 5e24a36b76ac7814bb5fc6ae9749a6e6, type: 3}
+      propertyPath: healAbility
+      value: 
+      objectReference: {fileID: 11400000, guid: 34a948c768cee4f40850b2bee1c7bb35, type: 2}
     - target: {fileID: 2365612312290727073, guid: 5e24a36b76ac7814bb5fc6ae9749a6e6, type: 3}
       propertyPath: turnManager
       value: 
@@ -1731,6 +1778,10 @@ PrefabInstance:
       propertyPath: buttonParent
       value: 
       objectReference: {fileID: 920182676}
+    - target: {fileID: 2365612312290727073, guid: 5e24a36b76ac7814bb5fc6ae9749a6e6, type: 3}
+      propertyPath: playerDamageable
+      value: 
+      objectReference: {fileID: 1905004944}
     - target: {fileID: 2365612312290727073, guid: 5e24a36b76ac7814bb5fc6ae9749a6e6, type: 3}
       propertyPath: enemyButtonPrefab
       value: 
@@ -1786,7 +1837,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4631821032213661967, guid: 5e24a36b76ac7814bb5fc6ae9749a6e6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1905004944}
   m_SourcePrefab: {fileID: 100100000, guid: 5e24a36b76ac7814bb5fc6ae9749a6e6, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

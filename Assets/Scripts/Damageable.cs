@@ -7,6 +7,7 @@ public class Damageable : MonoBehaviour
     public int maxHP;
     public int currentHP;
     public TurnManager turnManager;
+    public GameObject player;
 
     private void Start()
     {
@@ -20,7 +21,7 @@ public class Damageable : MonoBehaviour
         if(currentHP <= 0 )
         {
             Destroy(gameObject);
-            turnManager.RemoveEnemy(gameObject);
+            turnManager.RemoveEnemy(gameObject);          
         }
     }
     public void Healing(int damage)
@@ -34,5 +35,9 @@ public class Damageable : MonoBehaviour
         {
             currentHP = 100;
         }
+    }
+    private void HandleDeath()
+    {
+        turnManager.RemoveEnemy(gameObject);
     }
 }

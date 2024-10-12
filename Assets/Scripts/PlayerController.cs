@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
     public TurnManager turnManager;
     public HealAbility Healing;
     public Damageable playerDamageable;
+    public GameObject player;
+    public int playerHealth;
+    public int startHealth = 100;
 
     private void Start()
     {
@@ -110,4 +113,15 @@ public class PlayerController : MonoBehaviour
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
     }
+
+
+    public void PlayerHP(int damage)
+    {
+        playerHealth = playerHealth - damage;
+        if(playerHealth <= 0)
+        {
+            turnManager.HandleDefeat();
+        }
+    }
+
 }

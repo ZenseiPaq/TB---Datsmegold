@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a93429c65957ad469e3c32a3e29073c, type: 3}
-  m_Name: Healing
+  m_Script: {fileID: 11500000, guid: 2099cf57b35bede488130bc1a318670d, type: 3}
+  m_Name: Melee
   m_EditorClassIdentifier: 
-  abilityName: Heal
-  description: Heals your character for 50HP
-  icon: {fileID: 21300000, guid: e0300eaf56d275a4d9e9b2e29adeca96, type: 3}
-  healingAmount: 50
+  abilityName: Melee attack
+  damage: 20
