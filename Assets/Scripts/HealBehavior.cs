@@ -6,17 +6,9 @@ using UnityEngine;
 public class HealAbility : Ability
 {
     public int healingAmount = 50;
-
-    public void Use(Damageable targetDamageable)
+    
+    public void Use(PlayerController playerController)
     {
-        if (targetDamageable != null)
-        {
-            targetDamageable.Healing(healingAmount);
-            Debug.Log("Healed " + healingAmount + " health.");
-        }
-        else
-        {
-            Debug.LogWarning("TargetDamageable is null, healing not performed.");
-        }
+        playerController.Heal(healingAmount);
     }
 }

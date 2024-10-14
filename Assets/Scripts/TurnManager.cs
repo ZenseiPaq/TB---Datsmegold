@@ -82,6 +82,7 @@ public class TurnManager : MonoBehaviour
     void StartPlayerTurn()
     {
         bannerManager.ShowBanner("Your turn");
+        playerController.isShieldActive = false;
         StartCoroutine(StartPlayerTurnWithDelay());
     }
     IEnumerator StartPlayerTurnWithDelay()
@@ -89,24 +90,33 @@ public class TurnManager : MonoBehaviour
         yield return new WaitForSeconds(2f);
         menuManager.ShowAbilityMenu();
         state = TurnState.PlayerTurn;
+        playerController.StopParticleSystem();
+        playerController.CheckCurrentHP();
+        playerController.isShieldActive = false;
     }
+    IEnumerator EndPlayerTurnWithDelay()
+    {
+        yield return new WaitForSeconds(2f);
+
+        state = TurnState.EnemyTurn;
+        StartEnemyTurn();
+    }
+
 
     public void EndPlayerTurn()
     {
-        StartEnemyTurn();        
+        menuManager.HideAbilityMenu();
+        StartCoroutine(EndPlayerTurnWithDelay());
+        if (currentEnemyIndex == 0)
+        {
+            bannerManager.ShowBanner("Their Turn");
+        }
     }
 
     void StartEnemyTurn()
     {
         if (enemies.Count > 0)
         {
-            state = TurnState.EnemyTurn;
-            Debug.Log("Enemy's Turn");
-            if (currentEnemyIndex == 0)
-            {
-                bannerManager.ShowBanner("Their Turn");
-            }
-
             StartCoroutine(EnemyTurnRoutine());
         }
         else
@@ -130,15 +140,37 @@ public class TurnManager : MonoBehaviour
             EnemyBehavior enemyController = currentEnemy.GetComponent<EnemyBehavior>();
             if (enemyController != null)
             {
-                enemyController.PerformMeleeAttack(); // Call the melee attack method
+                // Check if the enemy should heal
+                bool useHeal = enemyController.currentHealth < 40;
+
+                if (useHeal)
+                {
+                    enemyController.HealSelf(); // Heal self
+                    Debug.Log($"{enemyController.name} heals.");
+                }
+                else
+                {
+                    // Decide randomly between ranged and melee attack
+                    bool useRangedAttack = Random.Range(0f, 1f) > 0.5f; // 50% chance for ranged attack
+
+                    if (useRangedAttack)
+                    {
+                        enemyController.PerformRangedAttack();
+                        Debug.Log($"{enemyController.name} shoots.");
+                    }
+                    else
+                    {
+                        enemyController.PerformMeleeAttack();
+                        Debug.Log($"{enemyController.name} stabs.");
+                    }
+                }
             }
 
-            yield return new WaitForSeconds(1f); // Wait for enemy to finish action
+            yield return new WaitForSeconds(2f); // Wait for enemy to finish action
         }
 
         EndEnemyTurn();
     }
-
     public void EndEnemyTurn()
     {
         StartPlayerTurn();

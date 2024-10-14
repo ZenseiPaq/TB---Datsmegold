@@ -4,16 +4,41 @@ using UnityEngine;
 
 public class BulletBehavior : MonoBehaviour
 {
-    public int damage = 100;
-    
+    public float speed = 10f;  // Speed of the bullet
+    public int pDamage = 10;     // Damage dealt by the bullet
+    public int eDamage = 20;
+    private Vector3 direction;   
 
-    void OnTriggerEnter(Collider other)
+    public void Initialize(Vector3 shootDirection)
     {
-        if (other.gameObject.CompareTag("Enemy"))
+        direction = shootDirection.normalized;  
+        Destroy(gameObject, 3f); 
+    }
+
+    private void Update()
+    {
+        transform.position += direction * speed * Time.deltaTime;
+    }
+
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (collider.gameObject.CompareTag("Player"))
         {
-            Damageable damageable = other.GetComponent<Damageable>();
-            damageable.TakeDamage(damage);
+            PlayerController player = collider.gameObject.GetComponent<PlayerController>();
+            if (player != null)
+            {
+                player.PlayerHP(pDamage);
+                Destroy(gameObject);
+                Debug.Log("Player damage");
+            }
+            Destroy(gameObject); 
+        }
+        if (collider.gameObject.CompareTag("Enemy")) 
+        {
+            EnemyBehavior enemyBehavior = collider.gameObject.GetComponent<EnemyBehavior>();
+            enemyBehavior.EnemyTakeDamage(eDamage);
             Destroy(gameObject);
+            Debug.Log("EnemyTakeDamage");
         }
     }
 }
