@@ -15,6 +15,7 @@ public class TurnManager : MonoBehaviour
     public MenuManager menuManager;
     public PlayerController playerController;
     public Damageable damageable;
+    public StartAndEndGame gameState;
     public EnemyBehavior enemyBehavior;
     
 
@@ -76,6 +77,11 @@ public class TurnManager : MonoBehaviour
 
     private void Start()
     {
+        if (gameState == null)
+        {
+            gameState = FindObjectOfType<StartAndEndGame>();
+        }
+        
         StartPlayerTurn();
     }
 
@@ -141,6 +147,7 @@ public class TurnManager : MonoBehaviour
 
     public void EndEnemyTurn()
     {
+        gameState.AddTurn(1);
         StartPlayerTurn();
     }
     public void RemoveEnemy(GameObject enemy)
@@ -160,12 +167,14 @@ public class TurnManager : MonoBehaviour
     {
         StopAllCoroutines();
         bannerManager.ShowBanner("Victory");
+        gameState.ShowVictoryScreen();
     }
 
     public void HandleDefeat()
     {
         menuManager.HideAbilityMenu();
         bannerManager.ShowBanner("Defeat");
+        gameState.YouDied();
         Debug.Log("You lost");
     }
 }
