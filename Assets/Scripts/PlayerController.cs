@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 using UnityEditor.Playables;
+using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,14 +17,18 @@ public class PlayerController : MonoBehaviour
     private Ability selectedAbility;
     public TurnManager turnManager;
     public HealAbility Healing;
-    public Damageable playerDamageable;
     public GameObject player;
     public int playerHealth;
     public int startHealth = 100;
-
+    public int maxHealth = 100;
+    public ParticleSystem playerOverHealth;
+    public bool isShieldActive = false;
+    private int shieldDamageReduction;
+    public GameObject shieldPrefab;
     private void Start()
     {
-        playerDamageable = GetComponent<Damageable>();
+        playerOverHealth.Stop();
+        shieldPrefab.SetActive(false);
     }
 
     void Update()
@@ -32,11 +37,19 @@ public class PlayerController : MonoBehaviour
         {
             RotateTowardsEnemy(targetEnemy);
         }
+        if(playerHealth < 100 && playerHealth > 0)
+        {
+            StopParticleSystem();
+        }
+        if(isShieldActive == true)
+        {
+            shieldPrefab.SetActive(true); 
+        }
     }
 
     public void SetSelectedAbility(Ability ability)
     {
-        selectedAbility = ability; // Set the selected ability
+        selectedAbility = ability;
         Debug.Log("Selected Ability: " + selectedAbility.abilityName);
     }
 
@@ -48,11 +61,16 @@ public class PlayerController : MonoBehaviour
         if (selectedAbility is HealAbility)
         {
             UseAbilityOnSelf();
-            return; // Early exit to prevent creating enemy buttons
+            return;
+        }
+        else if (selectedAbility is ShieldAbility shieldAbility)
+        {
+            shieldAbility.ActivateShield(this);
+            return;
         }
         else
         {
-            CreateEnemyButtons(); // Create buttons only for non-heal abilities
+            CreateEnemyButtons();
         }
     }
 
@@ -84,7 +102,7 @@ public class PlayerController : MonoBehaviour
     {
         targetEnemy = enemy;
         Debug.Log("Enemy selected: " + targetEnemy.name);
-        UseAbilityOnTarget(); // Call to use the selected ability on the target
+        UseAbilityOnTarget();
     }
 
     void UseAbilityOnTarget()
@@ -102,8 +120,12 @@ public class PlayerController : MonoBehaviour
     {
         if (selectedAbility is HealAbility healAbility)
         {
-            healAbility.Use(playerDamageable);
+            healAbility.Use(this);
             turnManager.EndPlayerTurn();
+        }
+        else if(selectedAbility is ShieldAbility shieldAbility)
+        {
+            shieldAbility.ActivateShield(this);
         }
     }
 
@@ -117,11 +139,52 @@ public class PlayerController : MonoBehaviour
 
     public void PlayerHP(int damage)
     {
-        playerHealth = playerHealth - damage;
-        if(playerHealth <= 0)
+
+        if (isShieldActive)
+        {
+            damage = Mathf.Max(0, damage / 2);
+            playerHealth = playerHealth - damage;
+        }
+        else
+        {
+            playerHealth = playerHealth - damage;
+            Debug.Log("I took" + damage);
+        }
+
+        if (playerHealth <= 0)
         {
             turnManager.HandleDefeat();
         }
+
+        if (playerHealth > 100)
+        {
+            playerOverHealth.Play();
+        }
+    }
+    public void CheckCurrentHP()
+    {
+        shieldPrefab.SetActive(false);
+        if (playerHealth > maxHealth)
+        {
+            playerHealth = maxHealth;
+        }
+    }
+    public void StopParticleSystem()
+    {
+        playerOverHealth.Stop();
     }
 
+    public void Heal(int healing)
+    {
+        playerHealth += healing;
+    }
+    public void SetShieldActive(int shieldPower)
+    {
+        isShieldActive = true;
+        shieldDamageReduction = shieldPower;
+        shieldPrefab.SetActive(true);
+        turnManager.EndPlayerTurn();
+        Debug.Log("ending turn with shield");
+    }
 }
+    

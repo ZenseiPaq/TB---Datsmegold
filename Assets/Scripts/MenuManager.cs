@@ -44,6 +44,11 @@ public class MenuManager : MonoBehaviour
             playerController.UseAbilityOnSelf();
             return; 
         }
+        else if(ability is ShieldAbility)
+        {
+            playerController.UseAbilityOnSelf();
+            return;
+        }
         else
         {
             playerController.CreateEnemyButtons();
