@@ -7,23 +7,20 @@ public class GunshotAbility : Ability
 {
     public GameObject projectilePrefab;
     public float projectileSpeed = 2f;
-    public Transform SelectedEnemy;
-    
 
-    public void Use(Transform target)
+    public void Use(Transform shootPoint, Transform target)
     {
-        if (projectilePrefab != null)
+        if (projectilePrefab != null && target != null)
         {
-            Transform gunTransform = target.transform;
-            Vector3 startingPosition = gunTransform.position;
-            GameObject projectile = Instantiate(projectilePrefab, startingPosition, Quaternion.identity);
-            Vector3 direction = (target.position - projectile.transform.position).normalized;
+            GameObject projectile = Instantiate(projectilePrefab, shootPoint.position, shootPoint.rotation);
 
-            // Set the projectile's speed
+            Vector3 direction = (target.position - shootPoint.position).normalized;
+            projectile.transform.rotation = Quaternion.LookRotation(direction);
+
             Rigidbody rb = projectile.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                rb.velocity = direction * projectileSpeed;
+                rb.velocity = direction * projectileSpeed; 
             }
         }
     }

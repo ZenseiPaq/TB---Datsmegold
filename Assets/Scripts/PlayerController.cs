@@ -1,12 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
-using UnityEngine.UI;
 using TMPro;
-using UnityEngine.EventSystems;
-using UnityEditor.Playables;
-using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -25,8 +21,13 @@ public class PlayerController : MonoBehaviour
     public bool isShieldActive = false;
     private int shieldDamageReduction;
     public GameObject shieldPrefab;
+    public TextMeshProUGUI healthDisplay;
+    public Transform shootPoint;
+
     private void Start()
     {
+        playerHealth = startHealth; // Initialize player health
+        UpdateHealthDisplay(); // Update health display at start
         playerOverHealth.Stop();
         shieldPrefab.SetActive(false);
     }
@@ -37,13 +38,13 @@ public class PlayerController : MonoBehaviour
         {
             RotateTowardsEnemy(targetEnemy);
         }
-        if(playerHealth < 100 && playerHealth > 0)
+        if (playerHealth < 100 && playerHealth > 0)
         {
             StopParticleSystem();
         }
-        if(isShieldActive == true)
+        if (isShieldActive)
         {
-            shieldPrefab.SetActive(true); 
+            shieldPrefab.SetActive(true);
         }
     }
 
@@ -109,7 +110,8 @@ public class PlayerController : MonoBehaviour
     {
         if (selectedAbility is GunshotAbility gunshotAbility && targetEnemy != null)
         {
-            gunshotAbility.Use(targetEnemy);
+            // Call the Use method, passing the shoot point and the target enemy
+            gunshotAbility.Use(shootPoint.transform, targetEnemy);
         }
         targetEnemy = null;
         turnManager.EndPlayerTurn();
@@ -121,9 +123,10 @@ public class PlayerController : MonoBehaviour
         if (selectedAbility is HealAbility healAbility)
         {
             healAbility.Use(this);
+            UpdateHealthDisplay(); // Update health display after healing
             turnManager.EndPlayerTurn();
         }
-        else if(selectedAbility is ShieldAbility shieldAbility)
+        else if (selectedAbility is ShieldAbility shieldAbility)
         {
             shieldAbility.ActivateShield(this);
         }
@@ -131,44 +134,60 @@ public class PlayerController : MonoBehaviour
 
     void RotateTowardsEnemy(Transform enemy)
     {
-        Vector3 direction = (enemy.position - transform.position).normalized;
-        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+        Vector3 direction = (enemy.position - transform.position).normalized; // Calculate direction to enemy
+        if (direction != Vector3.zero) // Ensure the direction is not zero to avoid issues
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z)); // Create rotation
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed); // Smoothly rotate
+        }
     }
-
 
     public void PlayerHP(int damage)
     {
-
         if (isShieldActive)
         {
             damage = Mathf.Max(0, damage / 2);
-            playerHealth = playerHealth - damage;
+            playerHealth -= damage;
         }
         else
         {
-            playerHealth = playerHealth - damage;
-            Debug.Log("I took" + damage);
+            playerHealth -= damage;
+            Debug.Log("I took " + damage + " damage");
         }
 
+        // Check for player defeat
         if (playerHealth <= 0)
         {
             turnManager.HandleDefeat();
         }
 
-        if (playerHealth > 100)
+        // Update health display after taking damage
+        UpdateHealthDisplay();
+
+        if (playerHealth > maxHealth)
         {
             playerOverHealth.Play();
         }
     }
+
+    public void UpdateHealthDisplay()
+    {
+        // Update the health display text
+        healthDisplay.text = $"Health: {playerHealth}/{maxHealth}";
+
+
+    }
+
     public void CheckCurrentHP()
     {
         shieldPrefab.SetActive(false);
         if (playerHealth > maxHealth)
         {
             playerHealth = maxHealth;
+            UpdateHealthDisplay();
         }
     }
+
     public void StopParticleSystem()
     {
         playerOverHealth.Stop();
@@ -177,14 +196,15 @@ public class PlayerController : MonoBehaviour
     public void Heal(int healing)
     {
         playerHealth += healing;
+        UpdateHealthDisplay(); // Update health display after healing
     }
+
     public void SetShieldActive(int shieldPower)
     {
         isShieldActive = true;
         shieldDamageReduction = shieldPower;
         shieldPrefab.SetActive(true);
         turnManager.EndPlayerTurn();
-        Debug.Log("ending turn with shield");
+        Debug.Log("Ending turn with shield");
     }
 }
-    
