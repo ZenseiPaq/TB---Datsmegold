@@ -62,7 +62,7 @@ public class EnemyBehavior : MonoBehaviour
         Instantiate(fighterModel, transform.position, Quaternion.identity, transform);
 
         maxHealth = 150;
-        moveSpeed = 2.5f;
+        moveSpeed = 9f;
         meleeDamage = 25;
         healAmount = 30;
         Debug.Log("Character One selected with 150 HP, 2.5 speed, 25 melee damage, and 30 heal amount.");
@@ -73,7 +73,7 @@ public class EnemyBehavior : MonoBehaviour
         Instantiate(archerModel, transform.position, Quaternion.identity, transform);
 
         maxHealth = 100;
-        moveSpeed = 3f;
+        moveSpeed = 8f;
         meleeDamage = 20;
         healAmount = 25;
         Debug.Log("Character Two selected with 100 HP, 3 speed, 20 melee damage, and 25 heal amount.");
@@ -84,7 +84,7 @@ public class EnemyBehavior : MonoBehaviour
         Instantiate(warlockModel, transform.position, Quaternion.identity, transform);
 
         maxHealth = 120;
-        moveSpeed = 2f;
+        moveSpeed = 7f;
         meleeDamage = 30;
         healAmount = 35;
         Debug.Log("Character Three selected with 120 HP, 2 speed, 30 melee damage, and 35 heal amount.");
@@ -95,7 +95,7 @@ public class EnemyBehavior : MonoBehaviour
         Instantiate(barbarianModel, transform.position, Quaternion.identity, transform);
 
         maxHealth = 200;
-        moveSpeed = 1.5f;
+        moveSpeed = 6f;
         meleeDamage = 40;
         healAmount = 40;
         Debug.Log("Character Four selected with 200 HP, 1.5 speed, 40 melee damage, and 40 heal amount.");

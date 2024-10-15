@@ -250,13 +250,17 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c8b8362ccb110b64ea8bd7332d52a219, type: 2}
   shootPoint: {fileID: 1843104905}
   bulletPrefab: {fileID: 5095747283219384651, guid: de1f4c33ba2a3c345b9d1535ddbe1d9b, type: 3}
+  archerModel: {fileID: 2628981947556190720, guid: e083c56ced07e1d42b56b9808843d2da, type: 3}
+  warlockModel: {fileID: 6898779357183794842, guid: 73320d1f4659eb6469688001de0ed8b2, type: 3}
+  barbarianModel: {fileID: 3773559772222915292, guid: 5a197e9ac7436734caa779cb11f8b2f4, type: 3}
+  fighterModel: {fileID: 5183396203198339089, guid: f9acebd499e5e9a40b4b5b0fb84c650e, type: 3}
   maxHealth: 100
   currentHealth: 0
-  player: {fileID: 2112652126}
-  attackRange: 1.5
   moveSpeed: 2
   meleeDamage: 20
   healAmount: 25
+  player: {fileID: 2112652126}
+  attackRange: 1.5
   healParticle: {fileID: 9187814198191549186, guid: 897d5275d3b4a4b4f80ef962030a1616, type: 3}
   turnManager: {fileID: 1609195787}
 --- !u!65 &80373158
@@ -287,7 +291,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 80373155}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1862,13 +1866,17 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c8b8362ccb110b64ea8bd7332d52a219, type: 2}
   shootPoint: {fileID: 1699721725}
   bulletPrefab: {fileID: 5095747283219384651, guid: de1f4c33ba2a3c345b9d1535ddbe1d9b, type: 3}
+  archerModel: {fileID: 2628981947556190720, guid: e083c56ced07e1d42b56b9808843d2da, type: 3}
+  warlockModel: {fileID: 6898779357183794842, guid: 73320d1f4659eb6469688001de0ed8b2, type: 3}
+  barbarianModel: {fileID: 3773559772222915292, guid: 5a197e9ac7436734caa779cb11f8b2f4, type: 3}
+  fighterModel: {fileID: 5183396203198339089, guid: f9acebd499e5e9a40b4b5b0fb84c650e, type: 3}
   maxHealth: 100
   currentHealth: 0
-  player: {fileID: 2112652126}
-  attackRange: 1.5
   moveSpeed: 2
   meleeDamage: 20
   healAmount: 25
+  player: {fileID: 2112652126}
+  attackRange: 1.5
   healParticle: {fileID: 9187814198191549186, guid: 897d5275d3b4a4b4f80ef962030a1616, type: 3}
   turnManager: {fileID: 1609195787}
 --- !u!4 &1038212143
@@ -1931,7 +1939,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1038212141}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
