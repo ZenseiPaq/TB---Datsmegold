@@ -179,7 +179,7 @@ public class TurnManager : MonoBehaviour
     }
     public void EndEnemyTurn()
     {
-        gameState.AddTurn(1);
+        gameState.AddTurn();
         StartPlayerTurn();
     }
     public void RemoveEnemy(GameObject enemy)

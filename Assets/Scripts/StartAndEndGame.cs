@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class StartAndEndGame : MonoBehaviour
 {
-    public int turnNumber = 1;
+    public int turnNumber;
     public float startTime;
     public float completionTime;
 
@@ -26,6 +26,8 @@ public class StartAndEndGame : MonoBehaviour
     {
         turnText = GameObject.Find("TurnText").GetComponent<TextMeshProUGUI>();
         timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
+        if (turnText == null) Debug.LogError("TurnText reference is not found!");
+        if (timerText == null) Debug.LogError("TimerText reference is not found!");
 
         normalCanvas = GameObject.Find("MainOverlay");
         endScreenCanvas = GameObject.Find("RetryScreen");
@@ -51,8 +53,9 @@ public class StartAndEndGame : MonoBehaviour
         UpdateUI();
     }
 
-    public void AddTurn(int turn)
+    public void AddTurn()
     {
+        turnNumber += 1;
         UpdateUI();
     }
 
