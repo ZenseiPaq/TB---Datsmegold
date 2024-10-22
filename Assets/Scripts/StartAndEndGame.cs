@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class StartAndEndGame : MonoBehaviour
 {
-    public StartAndEndGame gameState;
     public int turnNumber;
     public float startTime;
     public float completionTime;
@@ -128,5 +127,10 @@ public class StartAndEndGame : MonoBehaviour
         #else
         Application.Quit();
         #endif
+    }
+    public void BackToTitleScreen()
+    {
+        optionsCanvas.SetActive(false);
+        titleScreen.SetActive(true);
     }
 }
