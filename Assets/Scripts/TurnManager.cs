@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
+    public static TurnManager Instance { get; private set; }
     public CanvasGroup bannerCanvasGroup;
     public TurnState state;
     public List<GameObject> players;
@@ -30,7 +31,18 @@ public class TurnManager : MonoBehaviour
         Victory,
         Defeat
     }
-
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this; 
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject); 
+        }
+    }
     private void Update()
     {
         // Check for input to end turns (this can be expanded based on your game's needs)
@@ -80,8 +92,12 @@ public class TurnManager : MonoBehaviour
         if (gameState == null)
         {
             gameState = FindObjectOfType<StartAndEndGame>();
+            if (gameState == null)
+            {
+                return;
+            }
         }
-        
+
         StartPlayerTurn();
     }
 
@@ -179,6 +195,12 @@ public class TurnManager : MonoBehaviour
     }
     public void EndEnemyTurn()
     {
+        if (gameState == null)
+        {
+            Debug.LogError("GameState is null in EndEnemyTurn!");
+            return; // Prevents null reference if gameState is not set
+        }
+
         gameState.AddTurn();
         StartPlayerTurn();
     }
@@ -209,4 +231,14 @@ public class TurnManager : MonoBehaviour
         gameState.YouDied();
         Debug.Log("You lost");
     }
+    
+    public void AddEnemy(GameObject enemy)
+    {
+        if (!enemies.Contains(enemy))
+        {
+            enemies.Add(enemy);
+            Debug.Log($"{enemy.name} added to the enemy list.");
+        }
+    }
 }
+

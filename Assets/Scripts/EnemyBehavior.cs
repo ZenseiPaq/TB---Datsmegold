@@ -26,6 +26,15 @@ public class EnemyBehavior : MonoBehaviour
     public float attackRange = 1.5f;
     public GameObject healParticle;
     public TurnManager turnManager;
+    public GameObject WarlockSpell;
+    public GameObject ArcherSpell;
+
+    // Serialized fields to assign ScriptableObject abilities from the editor
+    [SerializeField] private EnemyAbility meleeAttackAbility;
+    [SerializeField] private EnemyAbility rangedAttackAbility;
+    [SerializeField] private EnemyAbility healAbility;
+    public enum CharacterType { Archer, Warlock, Barbarian, Fighter }
+    public CharacterType characterType;
 
     private void Start()
     {
@@ -43,83 +52,115 @@ public class EnemyBehavior : MonoBehaviour
         switch (randomCharacter)
         {
             case 0:
-                SetupCharacterOne();
+                characterType = CharacterType.Fighter;
+                SetupFighter();
                 break;
             case 1:
-                SetupCharacterTwo();
+                characterType = CharacterType.Archer;
+                SetupArcher();
                 break;
             case 2:
-                SetupCharacterThree();
+                characterType = CharacterType.Warlock;
+                SetupWarlock();
                 break;
             case 3:
-                SetupCharacterFour();
+                characterType = CharacterType.Barbarian;
+                SetupBarbarian();
                 break;
         }
     }
 
-    private void SetupCharacterOne()
+    private void SetupFighter()
     {
-        Instantiate(fighterModel, transform.position, Quaternion.identity, transform);
+        if (fighterModel != null)
+        {
+            Instantiate(fighterModel, transform.position, Quaternion.identity, transform);
+            TurnManager.Instance.AddEnemy(this.gameObject);
+            maxHealth = 150;
+            moveSpeed = 9f;
+            meleeDamage = 25;
+            healAmount = 30;
 
-        maxHealth = 150;
-        moveSpeed = 9f;
-        meleeDamage = 25;
-        healAmount = 30;
-        Debug.Log("Character One selected with 150 HP, 2.5 speed, 25 melee damage, and 30 heal amount.");
+            // Assign abilities from the ScriptableObject fields
+            abilities = new List<EnemyAbility> { meleeAttackAbility, healAbility };
+
+            Debug.Log("Character One selected with 150 HP, 9 speed, 25 melee damage, and 30 heal amount.");
+        }
     }
 
-    private void SetupCharacterTwo()
+    private void SetupArcher()
     {
-        Instantiate(archerModel, transform.position, Quaternion.identity, transform);
+        if (archerModel != null)
+        {
+            Instantiate(archerModel, transform.position, Quaternion.identity, transform);
+            TurnManager.Instance.AddEnemy(this.gameObject);
+            maxHealth = 100;
+            moveSpeed = 8f;
+            meleeDamage = 20;
+            healAmount = 25;
 
-        maxHealth = 100;
-        moveSpeed = 8f;
-        meleeDamage = 20;
-        healAmount = 25;
-        Debug.Log("Character Two selected with 100 HP, 3 speed, 20 melee damage, and 25 heal amount.");
+            abilities = new List<EnemyAbility> { rangedAttackAbility, healAbility };
+
+            Debug.Log("Character Two selected with 100 HP, 8 speed, 20 melee damage, and 25 heal amount.");
+        }
     }
 
-    private void SetupCharacterThree()
+    private void SetupWarlock()
     {
         Instantiate(warlockModel, transform.position, Quaternion.identity, transform);
-
+        TurnManager.Instance.AddEnemy(this.gameObject);
         maxHealth = 120;
         moveSpeed = 7f;
         meleeDamage = 30;
         healAmount = 35;
-        Debug.Log("Character Three selected with 120 HP, 2 speed, 30 melee damage, and 35 heal amount.");
+
+        abilities = new List<EnemyAbility> { rangedAttackAbility, healAbility };
+
+        Debug.Log("Character Three selected with 120 HP, 7 speed, 30 melee damage, and 35 heal amount.");
     }
 
-    private void SetupCharacterFour()
+    private void SetupBarbarian()
     {
         Instantiate(barbarianModel, transform.position, Quaternion.identity, transform);
-
+        TurnManager.Instance.AddEnemy(this.gameObject);
         maxHealth = 200;
         moveSpeed = 6f;
         meleeDamage = 40;
         healAmount = 40;
-        Debug.Log("Character Four selected with 200 HP, 1.5 speed, 40 melee damage, and 40 heal amount.");
+
+        abilities = new List<EnemyAbility> { meleeAttackAbility };
+
+        Debug.Log("Character Four selected with 200 HP, 6 speed, 40 melee damage, and 40 heal amount.");
     }
 
     public void PerformRandomAbility(GameObject target)
-    { 
-        if (currentHealth < 40)
-        {
-            if (Random.Range(0f, 1f) < 0.6f)
-            {
-                HealSelf();
-                Debug.Log($"{gameObject.name} heals itself.");
-                return;
-            }
-        }
+    {
         if (abilities.Count > 0)
         {
-            int randomIndex = Random.Range(0, abilities.Count);
-            abilities[randomIndex].Use(target);
-            Debug.Log($"{gameObject.name} uses ability: {abilities[randomIndex].name}");
-        }
+            int randomIndex;
 
+            // Check if the character is a warlock and choose an appropriate ability
+            if (characterType == CharacterType.Warlock)
+            {
+                // Filter out melee attack ability for warlock
+                List<EnemyAbility> validAbilities = abilities.FindAll(ability => ability != meleeAttackAbility);
+
+                // If there are no valid abilities left, return early
+                if (validAbilities.Count == 0)
+                {
+                    Debug.Log($"{gameObject.name} has no valid abilities to use!");
+                    return;
+                }
+
+                // Randomly select from the valid abilities
+                randomIndex = Random.Range(0, validAbilities.Count);
+                validAbilities[randomIndex].Use(target);
+                Debug.Log($"{gameObject.name} uses ability: {validAbilities[randomIndex].abilityName}");
+            }
+        }
     }
+
+
 
     public void HealSelf()
     {
@@ -141,6 +182,12 @@ public class EnemyBehavior : MonoBehaviour
 
     public void PerformMeleeAttack()
     {
+        if (characterType == CharacterType.Warlock)
+        {
+            PerformRangedAttack();
+            return;
+        }
+        
         if (Vector3.Distance(transform.position, player.transform.position) <= attackRange)
         {
             player.PlayerHP(meleeDamage);
@@ -180,12 +227,22 @@ public class EnemyBehavior : MonoBehaviour
         ShootBullet();
     }
 
-    private void ShootBullet()
+    public void ShootBullet()
     {
-        GameObject bullet = Instantiate(bulletPrefab, shootPoint.position, Quaternion.identity);
-        Vector3 direction = (player.transform.position - shootPoint.position).normalized;
-        BulletBehavior bulletBehavior = bullet.GetComponent<BulletBehavior>();
-        bulletBehavior.Initialize(direction);
+        if (characterType == CharacterType.Warlock)
+        {
+            GameObject bullet = Instantiate(WarlockSpell, shootPoint.position, Quaternion.identity);
+            Vector3 direction = (player.transform.position - shootPoint.position).normalized;
+            BulletBehavior bulletBehavior = bullet.GetComponent<BulletBehavior>();
+            bulletBehavior.Initialize(direction);
+        }
+        if(characterType == CharacterType.Archer)
+        {
+            GameObject bullet = Instantiate(ArcherSpell, shootPoint.position, Quaternion.identity);
+            Vector3 direction = (player.transform.position - shootPoint.position).normalized;
+            BulletBehavior bulletBehavior = bullet.GetComponent<BulletBehavior>();
+            bulletBehavior.Initialize(direction);
+        }
     }
 
     public void EnemyTakeDamage(int damage)
