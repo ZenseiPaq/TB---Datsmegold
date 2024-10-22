@@ -7,6 +7,7 @@ public class EnemyBehavior : MonoBehaviour
     public List<EnemyAbility> abilities;
     public Transform shootPoint;
     public GameObject bulletPrefab;
+    public GameObject LazerObject;
 
     // Character models
     public GameObject archerModel;
@@ -80,8 +81,6 @@ public class EnemyBehavior : MonoBehaviour
             moveSpeed = 9f;
             meleeDamage = 25;
             healAmount = 30;
-
-            // Assign abilities from the ScriptableObject fields
             abilities = new List<EnemyAbility> { meleeAttackAbility, healAbility };
 
             Debug.Log("Character One selected with 150 HP, 9 speed, 25 melee damage, and 30 heal amount.");
@@ -137,25 +136,12 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (abilities.Count > 0)
         {
-            int randomIndex;
 
-            // Check if the character is a warlock and choose an appropriate ability
-            if (characterType == CharacterType.Warlock)
             {
-                // Filter out melee attack ability for warlock
-                List<EnemyAbility> validAbilities = abilities.FindAll(ability => ability != meleeAttackAbility);
-
-                // If there are no valid abilities left, return early
-                if (validAbilities.Count == 0)
-                {
-                    Debug.Log($"{gameObject.name} has no valid abilities to use!");
-                    return;
-                }
-
-                // Randomly select from the valid abilities
-                randomIndex = Random.Range(0, validAbilities.Count);
-                validAbilities[randomIndex].Use(target);
-                Debug.Log($"{gameObject.name} uses ability: {validAbilities[randomIndex].abilityName}");
+                int randomIndex = Random.Range(0, abilities.Count);
+                EnemyAbility selectedAbility = abilities[randomIndex];
+                selectedAbility.Use(target);
+                Debug.Log($"{gameObject.name} uses ability: {selectedAbility.abilityName}");
             }
         }
     }
@@ -242,6 +228,14 @@ public class EnemyBehavior : MonoBehaviour
             Vector3 direction = (player.transform.position - shootPoint.position).normalized;
             BulletBehavior bulletBehavior = bullet.GetComponent<BulletBehavior>();
             bulletBehavior.Initialize(direction);
+        }
+        if (characterType == CharacterType.Fighter)
+        {
+            PerformMeleeAttack();
+        }
+        if (characterType == CharacterType.Barbarian)
+        {
+            PerformMeleeAttack();
         }
     }
 
