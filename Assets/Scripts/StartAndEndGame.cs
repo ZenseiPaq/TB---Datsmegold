@@ -33,11 +33,15 @@ public class StartAndEndGame : MonoBehaviour
         endScreenCanvas = GameObject.Find("RetryScreen");
         overlappingCanvas = GameObject.Find("GameOver");
         victoryCanvas = GameObject.Find("VictoryScreen");
+        titleScreen = GameObject.Find("TitleScreen");
+        optionsCanvas = GameObject.Find("OptionsScreen");
 
         normalCanvas.SetActive(true);
         endScreenCanvas.SetActive(false);
         overlappingCanvas.SetActive(false);
         victoryCanvas.SetActive(false);
+        titleScreen.SetActive(false);
+        optionsCanvas.SetActive(false);
 
         startTime = Time.time;
         UpdateUI();
@@ -115,9 +119,32 @@ public class StartAndEndGame : MonoBehaviour
         optionsCanvas.SetActive(true);
         titleScreen.SetActive(false);
     }
+    public void OnReturnButtonClicked()
+    {
+        optionsCanvas.SetActive(true);
+        titleScreen.SetActive(false);
+    }
     public void MainMenuButtonClicked()
     {
         SceneManager.LoadScene("Start");
+    }
+    public void EscapeMainMenu()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        if(currentScene.name == "Start")
+        {
+            return;
+        }
+
+        if (titleScreen.activeSelf)
+        {
+            titleScreen.SetActive(false);
+        }
+        else
+        {
+            titleScreen.SetActive(true);
+        }
     }
 
     public void OnQuitButtonClicked()

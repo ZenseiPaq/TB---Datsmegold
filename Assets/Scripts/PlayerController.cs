@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     public GameObject shieldPrefab;
     public TextMeshProUGUI healthDisplay;
     public Transform shootPoint;
+    public StartAndEndGame startEndGame;
 
     private void Start()
     {
@@ -30,6 +31,7 @@ public class PlayerController : MonoBehaviour
         UpdateHealthDisplay(); // Update health display at start
         playerOverHealth.Stop();
         shieldPrefab.SetActive(false);
+        startEndGame = FindObjectOfType<StartAndEndGame>();
     }
 
     void Update()
@@ -45,6 +47,10 @@ public class PlayerController : MonoBehaviour
         if (isShieldActive)
         {
             shieldPrefab.SetActive(true);
+        }
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            startEndGame.EscapeMainMenu();
         }
     }
 

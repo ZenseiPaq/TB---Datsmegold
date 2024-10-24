@@ -250,15 +250,26 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c8b8362ccb110b64ea8bd7332d52a219, type: 2}
   shootPoint: {fileID: 1843104905}
   bulletPrefab: {fileID: 5095747283219384651, guid: de1f4c33ba2a3c345b9d1535ddbe1d9b, type: 3}
+  LazerObject: {fileID: 0}
+  archerModel: {fileID: 0}
+  warlockModel: {fileID: 0}
+  barbarianModel: {fileID: 0}
+  fighterModel: {fileID: 0}
   maxHealth: 100
   currentHealth: 0
-  player: {fileID: 2112652126}
-  attackRange: 1.5
   moveSpeed: 2
   meleeDamage: 20
   healAmount: 25
+  player: {fileID: 2112652126}
+  attackRange: 1.5
   healParticle: {fileID: 9187814198191549186, guid: 897d5275d3b4a4b4f80ef962030a1616, type: 3}
   turnManager: {fileID: 1609195787}
+  WarlockSpell: {fileID: 0}
+  ArcherSpell: {fileID: 0}
+  meleeAttackAbility: {fileID: 0}
+  rangedAttackAbility: {fileID: 0}
+  healAbility: {fileID: 0}
+  characterType: 0
 --- !u!65 &80373158
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -339,7 +350,7 @@ Transform:
   m_GameObject: {fileID: 80373155}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.33, y: 1.7, z: -3.076}
+  m_LocalPosition: {x: 2.33, y: 1.7, z: -18.326}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -651,7 +662,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5392224628644384329, guid: 5e24a36b76ac7814bb5fc6ae9749a6e6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.48
+      value: -16.73
       objectReference: {fileID: 0}
     - target: {fileID: 5392224628644384329, guid: 5e24a36b76ac7814bb5fc6ae9749a6e6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1683,7 +1694,7 @@ Transform:
   m_GameObject: {fileID: 831461546}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -15.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1862,15 +1873,26 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c8b8362ccb110b64ea8bd7332d52a219, type: 2}
   shootPoint: {fileID: 1699721725}
   bulletPrefab: {fileID: 5095747283219384651, guid: de1f4c33ba2a3c345b9d1535ddbe1d9b, type: 3}
+  LazerObject: {fileID: 0}
+  archerModel: {fileID: 0}
+  warlockModel: {fileID: 0}
+  barbarianModel: {fileID: 0}
+  fighterModel: {fileID: 0}
   maxHealth: 100
   currentHealth: 0
-  player: {fileID: 2112652126}
-  attackRange: 1.5
   moveSpeed: 2
   meleeDamage: 20
   healAmount: 25
+  player: {fileID: 2112652126}
+  attackRange: 1.5
   healParticle: {fileID: 9187814198191549186, guid: 897d5275d3b4a4b4f80ef962030a1616, type: 3}
   turnManager: {fileID: 1609195787}
+  WarlockSpell: {fileID: 0}
+  ArcherSpell: {fileID: 0}
+  meleeAttackAbility: {fileID: 0}
+  rangedAttackAbility: {fileID: 0}
+  healAbility: {fileID: 0}
+  characterType: 0
 --- !u!4 &1038212143
 Transform:
   m_ObjectHideFlags: 0
@@ -1880,7 +1902,7 @@ Transform:
   m_GameObject: {fileID: 1038212141}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.33, y: 1.7, z: -1.48}
+  m_LocalPosition: {x: 2.33, y: 1.7, z: -16.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2060,7 +2082,7 @@ Transform:
   m_GameObject: {fileID: 1045086846}
   serializedVersion: 2
   m_LocalRotation: {x: 0.13052596, y: -0, z: -0, w: 0.99144495}
-  m_LocalPosition: {x: 0, y: 3.5, z: -10}
+  m_LocalPosition: {x: 0, y: 3.5, z: -25.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2166,7 +2188,7 @@ Transform:
   m_GameObject: {fileID: 1161140659}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.19, z: -2.22}
+  m_LocalPosition: {x: 0, y: 1.19, z: -17.47}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2919,18 +2941,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6ff3ab220c639c4484d8058095c733d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnNumber: 1
-  startTime: 0
-  completionTime: 0
-  turnText: {fileID: 1272970670}
-  timerText: {fileID: 2123787889}
-  victoryCanvas: {fileID: 1212135545}
-  normalCanvas: {fileID: 768576433}
-  endScreenCanvas: {fileID: 472989393}
-  overlappingCanvas: {fileID: 280236825}
-  titleScreen: {fileID: 0}
-  optionsCanvas: {fileID: 0}
-  playerController: {fileID: 0}
 --- !u!4 &1305807037
 Transform:
   m_ObjectHideFlags: 0
@@ -2940,7 +2950,7 @@ Transform:
   m_GameObject: {fileID: 1305807035}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 526.0685, y: 381.03574, z: 608.36035}
+  m_LocalPosition: {x: 526.0685, y: 381.03574, z: 749.61035}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3349,7 +3359,7 @@ Transform:
   m_GameObject: {fileID: 1567429555}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -15.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3443,7 +3453,7 @@ Transform:
   m_GameObject: {fileID: 1583887786}
   serializedVersion: 2
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 3, z: -15.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3517,7 +3527,7 @@ Transform:
   m_GameObject: {fileID: 1609195786}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 244.5, y: 213.5, z: 0}
+  m_LocalPosition: {x: 244.5, y: 213.5, z: -15.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

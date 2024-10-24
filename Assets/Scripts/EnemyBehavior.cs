@@ -83,7 +83,7 @@ public class EnemyBehavior : MonoBehaviour
             healAmount = 30;
             abilities = new List<EnemyAbility> { meleeAttackAbility, healAbility };
 
-            Debug.Log("Character One selected with 150 HP, 9 speed, 25 melee damage, and 30 heal amount.");
+            Debug.Log("Fighter selected with 150 HP, 9 speed, 25 melee damage, and 30 heal amount.");
         }
     }
 
@@ -100,7 +100,7 @@ public class EnemyBehavior : MonoBehaviour
 
             abilities = new List<EnemyAbility> { rangedAttackAbility, healAbility };
 
-            Debug.Log("Character Two selected with 100 HP, 8 speed, 20 melee damage, and 25 heal amount.");
+            Debug.Log("Archer selected with 100 HP, 8 speed, 20 melee damage, and 25 heal amount.");
         }
     }
 
@@ -115,7 +115,7 @@ public class EnemyBehavior : MonoBehaviour
 
         abilities = new List<EnemyAbility> { rangedAttackAbility, healAbility };
 
-        Debug.Log("Character Three selected with 120 HP, 7 speed, 30 melee damage, and 35 heal amount.");
+        Debug.Log("Warlock selected with 120 HP, 7 speed, 30 melee damage, and 35 heal amount.");
     }
 
     private void SetupBarbarian()
@@ -129,7 +129,7 @@ public class EnemyBehavior : MonoBehaviour
 
         abilities = new List<EnemyAbility> { meleeAttackAbility };
 
-        Debug.Log("Character Four selected with 200 HP, 6 speed, 40 melee damage, and 40 heal amount.");
+        Debug.Log("Barbarian selected with 200 HP, 6 speed, 40 melee damage, and 40 heal amount.");
     }
 
     public void PerformRandomAbility(GameObject target)

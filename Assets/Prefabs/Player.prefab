@@ -134,7 +134,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -162,7 +162,10 @@ MonoBehaviour:
   startHealth: 100
   maxHealth: 100
   playerOverHealth: {fileID: 5175649980675275644}
-  shieldPrefab: {fileID: 0}
+  isShieldActive: 0
+  shieldPrefab: {fileID: 6237137145090049743}
+  healthDisplay: {fileID: 0}
+  shootPoint: {fileID: 4952397684485436254}
 --- !u!1001 &4940808464633233941
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -225,6 +228,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8199442535397526599, guid: 4107e453f56f1734f875ff48a8d40d2c, type: 3}
   m_PrefabInstance: {fileID: 4940808464633233941}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6237137145090049743 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1305907754120611034, guid: 4107e453f56f1734f875ff48a8d40d2c, type: 3}
+  m_PrefabInstance: {fileID: 4940808464633233941}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8927203657545230034
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -280,6 +288,10 @@ PrefabInstance:
     - target: {fileID: 4337061350512860590, guid: 897d5275d3b4a4b4f80ef962030a1616, type: 3}
       propertyPath: InitialModule.rotation3D
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4337061350512860590, guid: 897d5275d3b4a4b4f80ef962030a1616, type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4337061350512860590, guid: 897d5275d3b4a4b4f80ef962030a1616, type: 3}
       propertyPath: InitialModule.startLifetime.scalar
