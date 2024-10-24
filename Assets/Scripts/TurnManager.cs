@@ -18,8 +18,10 @@ public class TurnManager : MonoBehaviour
     public Damageable damageable;
     public StartAndEndGame gameState;
     public EnemyBehavior enemyBehavior;
-    
-
+    public int battleCount = 1;
+    public Transform[] spawnPoints;
+    public GameObject enemyPrefab;
+    public StartAndEndGame startAndEndGame;
     private Coroutine currentCoroutine;
 
     public enum TurnState
@@ -42,9 +44,11 @@ public class TurnManager : MonoBehaviour
         {
             Destroy(gameObject); 
         }
+        
     }
     private void Update()
     {
+        startAndEndGame.currentBattle = battleCount;
         // Check for input to end turns (this can be expanded based on your game's needs)
         if (Input.GetKeyDown(KeyCode.W))
         {
@@ -97,8 +101,9 @@ public class TurnManager : MonoBehaviour
                 return;
             }
         }
-
+        battleCount++;
         StartPlayerTurn();
+        SpawnEnemies();
     }
 
     void StartPlayerTurn()
@@ -137,6 +142,11 @@ public class TurnManager : MonoBehaviour
 
     void StartEnemyTurn()
     {
+        if (enemies.Count == 0)
+        {
+            SpawnEnemies();
+        }
+
         if (enemies.Count > 0)
         {
             StartCoroutine(EnemyTurnRoutine());
@@ -153,16 +163,19 @@ public class TurnManager : MonoBehaviour
         for (int i = 0; i < enemies.Count; i++)
         {
             GameObject currentEnemy = enemies[i];
+
+            // Skip this iteration if the current enemy has been destroyed
             if (currentEnemy == null)
             {
-                Debug.LogWarning("Enemy at index " + i + " is null, skipping.");
-                continue;
+                battleCount++;
+                UpdateBattleUI();
+                SpawnEnemies();
+                break;
             }
 
             EnemyBehavior enemyController = currentEnemy.GetComponent<EnemyBehavior>();
             if (enemyController != null)
             {
-                // Check if the enemy should heal
                 bool useHeal = enemyController.currentHealth < 40;
 
                 if (useHeal)
@@ -213,7 +226,12 @@ public class TurnManager : MonoBehaviour
             if (currentEnemyIndex >= enemies.Count)
             {
                 currentEnemyIndex--;
-                Debug.Log("Enemies remaining" + enemies.Count);
+                if(currentEnemyIndex <= 0)
+                {
+                    battleCount++;
+                    SpawnEnemies();
+                }
+
             }
         }
     }
@@ -238,6 +256,46 @@ public class TurnManager : MonoBehaviour
         {
             enemies.Add(enemy);
             Debug.Log($"{enemy.name} added to the enemy list.");
+        }
+    }
+    public void SpawnEnemies()
+    {
+        // Clear existing enemies before spawning new ones
+        foreach (GameObject enemy in enemies)
+        {
+            Destroy(enemy);
+        }
+        enemies.Clear();
+
+        // Determine the number of enemies to spawn based on the battle count
+        int enemyCount = Mathf.Min(battleCount, spawnPoints.Length); // Limit by available spawn points
+
+        for (int i = 0; i < enemyCount; i++)
+        {
+            // Instantiate the enemy prefab at the spawn point
+            GameObject newEnemy = Instantiate(enemyPrefab, spawnPoints[i].position, Quaternion.identity);
+
+            // Get the EnemyBehavior component to initialize the enemy
+            EnemyBehavior enemyBehavior = newEnemy.GetComponent<EnemyBehavior>();
+
+            if (enemyBehavior != null)
+            {
+                // Optionally, you could set specific attributes here, but your enemy already initializes randomly
+                enemyBehavior.turnManager = this; // Ensure TurnManager reference is set
+            }
+
+            // Add the new enemy to the enemies list
+            AddEnemy(newEnemy);
+        }
+    }
+
+    public void UpdateBattleUI()
+    {
+        startAndEndGame.currentBattle = battleCount;
+        startAndEndGame.ShowBattleNumber();
+        if(battleCount >= 4)
+        {
+            HandleVictory();
         }
     }
 }

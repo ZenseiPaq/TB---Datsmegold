@@ -21,14 +21,13 @@ public class StartAndEndGame : MonoBehaviour
     public GameObject titleScreen;
     public GameObject optionsCanvas;
     public PlayerController playerController;
-
+    public TextMeshProUGUI currentBattleText;
+    public int currentBattle;
     void Start()
     {
         turnText = GameObject.Find("TurnText").GetComponent<TextMeshProUGUI>();
         timerText = GameObject.Find("Timer").GetComponent<TextMeshProUGUI>();
-        if (turnText == null) Debug.LogError("TurnText reference is not found!");
-        if (timerText == null) Debug.LogError("TimerText reference is not found!");
-
+        currentBattleText = GameObject.Find("BattleCount").GetComponent<TextMeshProUGUI>();
         normalCanvas = GameObject.Find("MainOverlay");
         endScreenCanvas = GameObject.Find("RetryScreen");
         overlappingCanvas = GameObject.Find("GameOver");
@@ -53,16 +52,22 @@ public class StartAndEndGame : MonoBehaviour
 
     void Update()
     {
+        currentBattleText.text = ("Battle "+ currentBattle);
         completionTime = Time.time - startTime;
         UpdateUI();
     }
 
     public void AddTurn()
     {
+
         turnNumber += 1;
         UpdateUI();
     }
-
+    public void ResetTurn()
+    {
+        turnNumber = 0;
+        UpdateUI();
+    }
     public void YouDied()
     {
         normalCanvas.SetActive(false);
@@ -78,7 +83,7 @@ public class StartAndEndGame : MonoBehaviour
 
     private void UpdateUI()
     {
-        if (turnText != null) turnText.text = "Turn: " + turnNumber;
+        if (turnText != null && turnNumber != 0) turnText.text = "Turn: " + turnNumber;
         if (timerText != null) timerText.text = "Time: " + Mathf.Floor(completionTime).ToString() + "s";
     }
     public void ShowVictoryScreen()
@@ -155,9 +160,20 @@ public class StartAndEndGame : MonoBehaviour
         Application.Quit();
         #endif
     }
+<<<<<<< Updated upstream
     public void BackToTitleScreen()
     {
         optionsCanvas.SetActive(false);
         titleScreen.SetActive(true);
+=======
+
+    public void ShowBattleNumber()
+    {
+        currentBattleText.text = ("Battle " + currentBattle);
+        if(currentBattle >= 4)
+        {
+            currentBattleText.text = ("TOTAL VICTORY");
+        }
+>>>>>>> Stashed changes
     }
 }

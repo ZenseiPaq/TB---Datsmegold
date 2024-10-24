@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController Instance { get; private set; }
     public float rotationSpeed = 5f;
     private Transform targetEnemy;
     public GameObject enemyButtonPrefab;
@@ -32,6 +33,18 @@ public class PlayerController : MonoBehaviour
         playerOverHealth.Stop();
         shieldPrefab.SetActive(false);
         startEndGame = FindObjectOfType<StartAndEndGame>();
+    }
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Update()

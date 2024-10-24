@@ -148,4 +148,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   pDamage: 10
-  eDamage: 61
+  eDamage: 200

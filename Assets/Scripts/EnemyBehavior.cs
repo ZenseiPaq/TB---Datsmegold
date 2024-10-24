@@ -39,11 +39,17 @@ public class EnemyBehavior : MonoBehaviour
 
     private void Start()
     {
-        startingPosition = transform.position;
+        
+            startingPosition = transform.position;
 
-        SelectRandomCharacter();
-
-        currentHealth = maxHealth;
+            player = FindObjectOfType<PlayerController>();
+            if (player == null)
+            {
+                Debug.LogError("PlayerController not found in the scene!");
+            }
+            SelectRandomCharacter();
+            currentHealth = maxHealth;
+        
     }
 
     private void SelectRandomCharacter()
