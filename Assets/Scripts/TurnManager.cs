@@ -49,7 +49,7 @@ public class TurnManager : MonoBehaviour
     private void Update()
     {
         startAndEndGame.currentBattle = battleCount;
-        // Check for input to end turns (this can be expanded based on your game's needs)
+
         if (Input.GetKeyDown(KeyCode.W))
         {
             EndPlayerTurn();
@@ -59,7 +59,6 @@ public class TurnManager : MonoBehaviour
             EndEnemyTurn();
         }
 
-        // Check for victory or defeat
         if (players.Count == 0)
         {
             state = TurnState.Defeat;
@@ -69,7 +68,6 @@ public class TurnManager : MonoBehaviour
             state = TurnState.Victory;
         }
 
-        // Trigger actions based on the current state
         switch (state)
         {
             case TurnState.Victory:
@@ -164,7 +162,6 @@ public class TurnManager : MonoBehaviour
         {
             GameObject currentEnemy = enemies[i];
 
-            // Skip this iteration if the current enemy has been destroyed
             if (currentEnemy == null)
             {
                 battleCount++;
@@ -180,13 +177,12 @@ public class TurnManager : MonoBehaviour
 
                 if (useHeal)
                 {
-                    enemyController.HealSelf(); // Heal self
+                    enemyController.HealSelf();
                     Debug.Log($"{enemyController.name} heals.");
                 }
                 else
                 {
-                    // Decide randomly between ranged and melee attack
-                    bool useRangedAttack = Random.Range(0f, 1f) > 0.5f; // 50% chance for ranged attack
+                    bool useRangedAttack = Random.Range(0f, 1f) > 0.5f;
 
                     if (useRangedAttack)
                     {
@@ -201,7 +197,7 @@ public class TurnManager : MonoBehaviour
                 }
             }
 
-            yield return new WaitForSeconds(2f); // Wait for enemy to finish action
+            yield return new WaitForSeconds(2f);
         }
 
         EndEnemyTurn();
@@ -211,7 +207,7 @@ public class TurnManager : MonoBehaviour
         if (gameState == null)
         {
             Debug.LogError("GameState is null in EndEnemyTurn!");
-            return; // Prevents null reference if gameState is not set
+            return;
         }
 
         gameState.AddTurn();
@@ -260,31 +256,25 @@ public class TurnManager : MonoBehaviour
     }
     public void SpawnEnemies()
     {
-        // Clear existing enemies before spawning new ones
         foreach (GameObject enemy in enemies)
         {
             Destroy(enemy);
         }
         enemies.Clear();
 
-        // Determine the number of enemies to spawn based on the battle count
-        int enemyCount = Mathf.Min(battleCount, spawnPoints.Length); // Limit by available spawn points
+        int enemyCount = Mathf.Min(battleCount, spawnPoints.Length);
 
         for (int i = 0; i < enemyCount; i++)
         {
-            // Instantiate the enemy prefab at the spawn point
             GameObject newEnemy = Instantiate(enemyPrefab, spawnPoints[i].position, Quaternion.identity);
 
-            // Get the EnemyBehavior component to initialize the enemy
             EnemyBehavior enemyBehavior = newEnemy.GetComponent<EnemyBehavior>();
 
             if (enemyBehavior != null)
             {
-                // Optionally, you could set specific attributes here, but your enemy already initializes randomly
-                enemyBehavior.turnManager = this; // Ensure TurnManager reference is set
+                enemyBehavior.turnManager = this;
             }
 
-            // Add the new enemy to the enemies list
             AddEnemy(newEnemy);
         }
     }
@@ -299,4 +289,3 @@ public class TurnManager : MonoBehaviour
         }
     }
 }
-

@@ -42,6 +42,14 @@ public class StartAndEndGame : MonoBehaviour
         titleScreen.SetActive(false);
         optionsCanvas.SetActive(false);
 
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        if(currentScene.name == "Start")
+        {
+            titleScreen.SetActive(true);
+        }
+
+
         startTime = Time.time;
         UpdateUI();
         if (playerController == null)
@@ -126,8 +134,8 @@ public class StartAndEndGame : MonoBehaviour
     }
     public void OnReturnButtonClicked()
     {
-        optionsCanvas.SetActive(true);
-        titleScreen.SetActive(false);
+        optionsCanvas.SetActive(false);
+        titleScreen.SetActive(true);
     }
     public void MainMenuButtonClicked()
     {
@@ -144,6 +152,7 @@ public class StartAndEndGame : MonoBehaviour
 
         if (titleScreen.activeSelf)
         {
+            optionsCanvas.SetActive(false);
             titleScreen.SetActive(false);
         }
         else
@@ -160,20 +169,17 @@ public class StartAndEndGame : MonoBehaviour
         Application.Quit();
         #endif
     }
-<<<<<<< Updated upstream
     public void BackToTitleScreen()
     {
         optionsCanvas.SetActive(false);
         titleScreen.SetActive(true);
-=======
-
+    }
     public void ShowBattleNumber()
     {
         currentBattleText.text = ("Battle " + currentBattle);
         if(currentBattle >= 4)
         {
-            currentBattleText.text = ("TOTAL VICTORY");
+            currentBattleText.text = ("YOU'VE SAVED YOUR GOLD!");
         }
->>>>>>> Stashed changes
     }
 }

@@ -81,8 +81,8 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (fighterModel != null)
         {
-            Instantiate(fighterModel, transform.position, Quaternion.identity, transform);
-            TurnManager.Instance.AddEnemy(this.gameObject);
+            GameObject fighterInstance = Instantiate(fighterModel, transform.position, Quaternion.identity, transform);
+            fighterInstance.name = fighterModel.name;
             maxHealth = 150;
             moveSpeed = 9f;
             meleeDamage = 25;
@@ -97,7 +97,8 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (archerModel != null)
         {
-            Instantiate(archerModel, transform.position, Quaternion.identity, transform);
+            GameObject archerInstance = Instantiate(archerModel, transform.position, Quaternion.identity, transform);
+            archerInstance.name = archerModel.name;
             TurnManager.Instance.AddEnemy(this.gameObject);
             maxHealth = 100;
             moveSpeed = 8f;
@@ -105,14 +106,14 @@ public class EnemyBehavior : MonoBehaviour
             healAmount = 25;
 
             abilities = new List<EnemyAbility> { rangedAttackAbility, healAbility };
-
             Debug.Log("Archer selected with 100 HP, 8 speed, 20 melee damage, and 25 heal amount.");
         }
     }
 
     private void SetupWarlock()
     {
-        Instantiate(warlockModel, transform.position, Quaternion.identity, transform);
+        GameObject warlockInstance = Instantiate(warlockModel, transform.position, Quaternion.identity, transform);
+        warlockInstance.name = warlockModel.name;
         TurnManager.Instance.AddEnemy(this.gameObject);
         maxHealth = 120;
         moveSpeed = 7f;
@@ -126,7 +127,8 @@ public class EnemyBehavior : MonoBehaviour
 
     private void SetupBarbarian()
     {
-        Instantiate(barbarianModel, transform.position, Quaternion.identity, transform);
+        GameObject barbarianInstance = Instantiate(barbarianModel, transform.position, Quaternion.identity, transform);
+        barbarianInstance.name = barbarianModel.name;
         TurnManager.Instance.AddEnemy(this.gameObject);
         maxHealth = 200;
         moveSpeed = 6f;
