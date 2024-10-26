@@ -18,12 +18,11 @@ public class TurnManager : MonoBehaviour
     public Damageable damageable;
     public StartAndEndGame gameState;
     public EnemyBehavior enemyBehavior;
-    public int battleCount = 1;
+    public int battleCount = 0;
     public Transform[] spawnPoints;
     public GameObject enemyPrefab;
     public StartAndEndGame startAndEndGame;
     private Coroutine currentCoroutine;
-
     public enum TurnState
     {
         PlayerTurn,
@@ -48,7 +47,6 @@ public class TurnManager : MonoBehaviour
     }
     private void Update()
     {
-        startAndEndGame.currentBattle = battleCount;
 
         if (Input.GetKeyDown(KeyCode.W))
         {
@@ -99,12 +97,13 @@ public class TurnManager : MonoBehaviour
                 return;
             }
         }
+        startAndEndGame.currentBattle = battleCount;
         battleCount++;
         StartPlayerTurn();
         SpawnEnemies();
     }
 
-    void StartPlayerTurn()
+    public void StartPlayerTurn()
     {
         bannerManager.ShowBanner("Your turn");
         playerController.isShieldActive = false;
@@ -138,21 +137,11 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    void StartEnemyTurn()
+    public void StartEnemyTurn()
     {
-        if (enemies.Count == 0)
-        {
-            SpawnEnemies();
-        }
-
         if (enemies.Count > 0)
         {
             StartCoroutine(EnemyTurnRoutine());
-        }
-        else
-        {
-            HandleVictory();
-            StopCoroutine(EnemyTurnRoutine());
         }
     }
 
@@ -162,13 +151,6 @@ public class TurnManager : MonoBehaviour
         {
             GameObject currentEnemy = enemies[i];
 
-            if (currentEnemy == null)
-            {
-                battleCount++;
-                UpdateBattleUI();
-                SpawnEnemies();
-                break;
-            }
 
             EnemyBehavior enemyController = currentEnemy.GetComponent<EnemyBehavior>();
             if (enemyController != null)
@@ -215,27 +197,36 @@ public class TurnManager : MonoBehaviour
     }
     public void RemoveEnemy(GameObject enemy)
     {
+        EnemyBehavior enemyBehavior = enemy.GetComponent<EnemyBehavior>();
+        if (enemyBehavior != null)
+        {
+            enemyBehavior.isDefeated = true; // Mark as defeated
+            enemy.tag = "Untagged"; // Optionally remove tag
+        }
+
         if (enemies.Contains(enemy))
         {
             enemies.Remove(enemy);
-            Debug.Log($"Enemy {enemy.name} removed from the list.");
-            if (currentEnemyIndex >= enemies.Count)
+            Debug.Log($"Enemy {enemy.name} removed. Remaining enemies: {enemies.Count}");
+            Destroy(enemy);
+        }
+        if(enemies.Count == 0)
+        {            
+            battleCount++;
+            startAndEndGame.NextBattle();
+            for(int i = 0; i<battleCount; i++)
             {
-                currentEnemyIndex--;
-                if(currentEnemyIndex <= 0)
-                {
-                    battleCount++;
-                    SpawnEnemies();
-                }
-
+                SpawnEnemies();
+                enemyBehavior.StopAllCoroutines();
             }
+            StartPlayerTurn();
+            state = TurnState.PlayerTurn;
         }
     }
+
     public void HandleVictory()
     {
         StopAllCoroutines();
-        bannerManager.ShowBanner("Victory");
-        gameState.ShowVictoryScreen();
     }
 
     public void HandleDefeat()
@@ -248,44 +239,54 @@ public class TurnManager : MonoBehaviour
     
     public void AddEnemy(GameObject enemy)
     {
-        if (!enemies.Contains(enemy))
-        {
             enemies.Add(enemy);
             Debug.Log($"{enemy.name} added to the enemy list.");
-        }
     }
     public void SpawnEnemies()
     {
+        // Clear the existing enemies
         foreach (GameObject enemy in enemies)
         {
             Destroy(enemy);
         }
         enemies.Clear();
 
-        int enemyCount = Mathf.Min(battleCount, spawnPoints.Length);
+        // Calculate the number of enemies to spawn based on battle count
+        int enemyCount = Mathf.Min(battleCount, 3); // Max 3 enemies
+        Debug.Log($"Attempting to spawn {enemyCount} enemies.");
+
+        List<Transform> availableSpawnPoints = new List<Transform>(spawnPoints);
 
         for (int i = 0; i < enemyCount; i++)
         {
-            GameObject newEnemy = Instantiate(enemyPrefab, spawnPoints[i].position, Quaternion.identity);
-
-            EnemyBehavior enemyBehavior = newEnemy.GetComponent<EnemyBehavior>();
-
-            if (enemyBehavior != null)
+            // Check if there are available spawn points
+            if (availableSpawnPoints.Count > 0)
             {
-                enemyBehavior.turnManager = this;
+                // Randomly select a spawn point and remove it from the list
+                int spawnIndex = Random.Range(0, availableSpawnPoints.Count);
+                Transform selectedSpawnPoint = availableSpawnPoints[spawnIndex];
+                availableSpawnPoints.RemoveAt(spawnIndex);
+
+                // Log the spawn position
+                Debug.Log($"Spawning enemy at position: {selectedSpawnPoint.position}");
+
+                // Instantiate the enemy at the selected spawn point
+                GameObject newEnemy = Instantiate(enemyPrefab, selectedSpawnPoint.position, Quaternion.identity);
+
+                EnemyBehavior enemyBehavior = newEnemy.GetComponent<EnemyBehavior>();
+                if (enemyBehavior != null)
+                {
+                    enemyBehavior.turnManager = this;
+                }
+
+                AddEnemy(newEnemy);                
             }
-
-            AddEnemy(newEnemy);
+            else
+            {
+                Debug.LogWarning("No available spawn points left!");
+            }
         }
     }
 
-    public void UpdateBattleUI()
-    {
-        startAndEndGame.currentBattle = battleCount;
-        startAndEndGame.ShowBattleNumber();
-        if(battleCount >= 4)
-        {
-            HandleVictory();
-        }
-    }
+
 }

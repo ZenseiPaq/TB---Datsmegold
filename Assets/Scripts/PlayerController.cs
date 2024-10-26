@@ -107,14 +107,18 @@ public class PlayerController : MonoBehaviour
 
         for (int i = 0; i < enemies.Length; i++)
         {
-            GameObject enemy = enemies[i];
-            GameObject newButton = Instantiate(enemyButtonPrefab, buttonParent);
-            newButton.GetComponentInChildren<TextMeshProUGUI>().text = enemy.name;
-            newButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -30 * i);
-            GameObject localEnemy = enemy;
+            EnemyBehavior enemyBehavior = enemies[i].GetComponent<EnemyBehavior>();
+            if (enemyBehavior != null && !enemyBehavior.isDefeated) // Check if enemy is not defeated
+            {
+                GameObject enemy = enemies[i];
+                GameObject newButton = Instantiate(enemyButtonPrefab, buttonParent);
+                newButton.GetComponentInChildren<TextMeshProUGUI>().text = enemy.name;
+                newButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -30 * i);
+                GameObject localEnemy = enemy;
 
-            // Add listener to select enemy and use ability
-            newButton.GetComponent<Button>().onClick.AddListener(() => SelectEnemy(localEnemy.transform));
+                // Add listener to select enemy and use ability
+                newButton.GetComponent<Button>().onClick.AddListener(() => SelectEnemy(localEnemy.transform));
+            }
         }
     }
 

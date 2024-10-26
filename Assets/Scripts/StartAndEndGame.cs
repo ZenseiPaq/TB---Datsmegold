@@ -56,6 +56,7 @@ public class StartAndEndGame : MonoBehaviour
         {
             playerController = FindObjectOfType<PlayerController>();
         }
+        currentBattle++;
     }
 
     void Update()
@@ -176,10 +177,11 @@ public class StartAndEndGame : MonoBehaviour
     }
     public void ShowBattleNumber()
     {
-        currentBattleText.text = ("Battle " + currentBattle);
-        if(currentBattle >= 4)
-        {
-            currentBattleText.text = ("YOU'VE SAVED YOUR GOLD!");
-        }
+        currentBattleText.text = ("Battle " + currentBattle);        
+    }
+    public void NextBattle()
+    {
+        currentBattle++;
+        ShowBattleNumber();
     }
 }

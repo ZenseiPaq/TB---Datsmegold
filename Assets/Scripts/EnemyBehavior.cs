@@ -8,13 +8,14 @@ public class EnemyBehavior : MonoBehaviour
     public Transform shootPoint;
     public GameObject bulletPrefab;
     public GameObject LazerObject;
+    public string characterName;
 
     // Character models
     public GameObject archerModel;
     public GameObject warlockModel;
     public GameObject barbarianModel;
     public GameObject fighterModel;
-
+    private GameObject instantiatedModel;
     // Character attributes
     public int maxHealth;
     public int currentHealth;
@@ -29,7 +30,7 @@ public class EnemyBehavior : MonoBehaviour
     public TurnManager turnManager;
     public GameObject WarlockSpell;
     public GameObject ArcherSpell;
-
+    public bool isDefeated = false;
     // Serialized fields to assign ScriptableObject abilities from the editor
     [SerializeField] private EnemyAbility meleeAttackAbility;
     [SerializeField] private EnemyAbility rangedAttackAbility;
@@ -49,7 +50,7 @@ public class EnemyBehavior : MonoBehaviour
             }
             SelectRandomCharacter();
             currentHealth = maxHealth;
-        
+            
     }
 
     private void SelectRandomCharacter()
@@ -81,14 +82,13 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (fighterModel != null)
         {
-            GameObject fighterInstance = Instantiate(fighterModel, transform.position, Quaternion.identity, transform);
-            fighterInstance.name = fighterModel.name;
+            instantiatedModel = Instantiate(fighterModel, transform.position, Quaternion.identity, transform);
             maxHealth = 150;
             moveSpeed = 9f;
             meleeDamage = 25;
             healAmount = 30;
             abilities = new List<EnemyAbility> { meleeAttackAbility, healAbility };
-
+            characterName = "Fighter";
             Debug.Log("Fighter selected with 150 HP, 9 speed, 25 melee damage, and 30 heal amount.");
         }
     }
@@ -97,14 +97,12 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (archerModel != null)
         {
-            GameObject archerInstance = Instantiate(archerModel, transform.position, Quaternion.identity, transform);
-            archerInstance.name = archerModel.name;
-            TurnManager.Instance.AddEnemy(this.gameObject);
+            instantiatedModel = Instantiate(archerModel, transform.position, Quaternion.identity, transform);
             maxHealth = 100;
             moveSpeed = 8f;
             meleeDamage = 20;
             healAmount = 25;
-
+            characterName = "Archer";
             abilities = new List<EnemyAbility> { rangedAttackAbility, healAbility };
             Debug.Log("Archer selected with 100 HP, 8 speed, 20 melee damage, and 25 heal amount.");
         }
@@ -112,32 +110,32 @@ public class EnemyBehavior : MonoBehaviour
 
     private void SetupWarlock()
     {
-        GameObject warlockInstance = Instantiate(warlockModel, transform.position, Quaternion.identity, transform);
-        warlockInstance.name = warlockModel.name;
-        TurnManager.Instance.AddEnemy(this.gameObject);
-        maxHealth = 120;
-        moveSpeed = 7f;
-        meleeDamage = 30;
-        healAmount = 35;
-
-        abilities = new List<EnemyAbility> { rangedAttackAbility, healAbility };
-
-        Debug.Log("Warlock selected with 120 HP, 7 speed, 30 melee damage, and 35 heal amount.");
+        if (warlockModel != null)
+        {
+            instantiatedModel = Instantiate(warlockModel, transform.position, Quaternion.identity, transform);
+            maxHealth = 120;
+            moveSpeed = 7f;
+            meleeDamage = 30;
+            healAmount = 35;
+            characterName = "Warlock";
+            abilities = new List<EnemyAbility> { rangedAttackAbility, healAbility };
+            Debug.Log("Warlock selected with 120 HP, 7 speed, 30 melee damage, and 35 heal amount.");
+        }
     }
 
     private void SetupBarbarian()
     {
-        GameObject barbarianInstance = Instantiate(barbarianModel, transform.position, Quaternion.identity, transform);
-        barbarianInstance.name = barbarianModel.name;
-        TurnManager.Instance.AddEnemy(this.gameObject);
-        maxHealth = 200;
-        moveSpeed = 6f;
-        meleeDamage = 40;
-        healAmount = 40;
-
-        abilities = new List<EnemyAbility> { meleeAttackAbility };
-
-        Debug.Log("Barbarian selected with 200 HP, 6 speed, 40 melee damage, and 40 heal amount.");
+        if (barbarianModel != null)
+        {
+            instantiatedModel = Instantiate(barbarianModel, transform.position, Quaternion.identity, transform);
+            maxHealth = 200;
+            moveSpeed = 6f;
+            meleeDamage = 40;
+            healAmount = 40;
+            characterName = "Barbarian";
+            abilities = new List<EnemyAbility> { meleeAttackAbility };
+            Debug.Log("Barbarian selected with 200 HP, 6 speed, 40 melee damage, and 40 heal amount.");
+        }
     }
 
     public void PerformRandomAbility(GameObject target)
@@ -250,10 +248,29 @@ public class EnemyBehavior : MonoBehaviour
     public void EnemyTakeDamage(int damage)
     {
         currentHealth -= damage;
-        if(currentHealth <= 0 )
+        if (currentHealth <= 0)
         {
-            Destroy(this.gameObject);
+            // Destroy all child objects (e.g., models)
+            foreach (Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            StartCoroutine(CheckIfDefeated());
+            Debug.Log($"{gameObject.name} has been defeated.");
         }
         Debug.Log($"{gameObject.name} took {damage} damage and has {currentHealth} HP left.");
+    }
+    private IEnumerator CheckIfDefeated()
+    {
+        // Wait a frame to ensure children are destroyed
+        yield return null;
+
+        // Check if all children are destroyed
+        if (transform.childCount == 0)
+        {
+            Debug.Log($"{gameObject.name} has no remaining models and is considered fully defeated.");
+            turnManager.RemoveEnemy(gameObject);
+        }
     }
 }
