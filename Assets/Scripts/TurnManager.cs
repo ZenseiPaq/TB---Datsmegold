@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TurnManager : MonoBehaviour
 {
@@ -15,14 +14,13 @@ public class TurnManager : MonoBehaviour
     public BannerManager bannerManager;
     public MenuManager menuManager;
     public PlayerController playerController;
-    public Damageable damageable;
     public StartAndEndGame gameState;
-    public EnemyBehavior enemyBehavior;
-    public int battleCount = 0;
-    public Transform[] spawnPoints;
-    public GameObject enemyPrefab;
     public StartAndEndGame startAndEndGame;
+    public GameObject enemyPrefab;
+    public Transform[] spawnPoints;
+    public int battleCount = 0;
     private Coroutine currentCoroutine;
+
     public enum TurnState
     {
         PlayerTurn,
@@ -30,8 +28,10 @@ public class TurnManager : MonoBehaviour
         Idle,
         Endturn,
         Victory,
-        Defeat
+        Defeat,
+        EnemiesDead
     }
+
     private void Awake()
     {
         if (Instance == null)
@@ -43,11 +43,23 @@ public class TurnManager : MonoBehaviour
         {
             Destroy(gameObject); 
         }
-        
     }
+
+    private void Start()
+    {
+        battleCount = 1;  
+        if (gameState == null)
+        {
+            gameState = FindObjectOfType<StartAndEndGame>();
+            if (gameState == null) return;
+        }
+        startAndEndGame.currentBattle = battleCount;
+        SpawnEnemies();
+        StartPlayerTurn();
+    }
+
     private void Update()
     {
-
         if (Input.GetKeyDown(KeyCode.W))
         {
             EndPlayerTurn();
@@ -61,9 +73,9 @@ public class TurnManager : MonoBehaviour
         {
             state = TurnState.Defeat;
         }
-        if (enemies.Count == 0)
+        else if (enemies.Count == 0)
         {
-            state = TurnState.Victory;
+            state = TurnState.EnemiesDead;
         }
 
         switch (state)
@@ -77,55 +89,29 @@ public class TurnManager : MonoBehaviour
                 break;
 
             case TurnState.PlayerTurn:
-
                 break;
 
             case TurnState.EnemyTurn:
-
                 break;
         }
-    }
-
-
-    private void Start()
-    {
-        if (gameState == null)
-        {
-            gameState = FindObjectOfType<StartAndEndGame>();
-            if (gameState == null)
-            {
-                return;
-            }
-        }
-        startAndEndGame.currentBattle = battleCount;
-        battleCount++;
-        StartPlayerTurn();
-        SpawnEnemies();
     }
 
     public void StartPlayerTurn()
     {
+        Debug.Log("Starting Player's Turn.");
         bannerManager.ShowBanner("Your turn");
         playerController.isShieldActive = false;
         StartCoroutine(StartPlayerTurnWithDelay());
     }
-    IEnumerator StartPlayerTurnWithDelay()
+
+    private IEnumerator StartPlayerTurnWithDelay()
     {
         yield return new WaitForSeconds(2f);
         menuManager.ShowAbilityMenu();
         state = TurnState.PlayerTurn;
-        playerController.StopParticleSystem();
         playerController.CheckCurrentHP();
-        playerController.isShieldActive = false;
+        Debug.Log("Player Turn Active.");
     }
-    IEnumerator EndPlayerTurnWithDelay()
-    {
-        yield return new WaitForSeconds(2f);
-
-        state = TurnState.EnemyTurn;
-        StartEnemyTurn();
-    }
-
 
     public void EndPlayerTurn()
     {
@@ -137,26 +123,30 @@ public class TurnManager : MonoBehaviour
         }
     }
 
+    private IEnumerator EndPlayerTurnWithDelay()
+    {
+        yield return new WaitForSeconds(2f);
+        state = TurnState.EnemyTurn;
+        StartEnemyTurn();
+    }
+
     public void StartEnemyTurn()
     {
-        if (enemies.Count > 0)
+        if (state == TurnState.EnemyTurn && enemies.Count > 0)
         {
             StartCoroutine(EnemyTurnRoutine());
         }
     }
 
-    IEnumerator EnemyTurnRoutine()
+    private IEnumerator EnemyTurnRoutine()
     {
         for (int i = 0; i < enemies.Count; i++)
         {
             GameObject currentEnemy = enemies[i];
-
-
             EnemyBehavior enemyController = currentEnemy.GetComponent<EnemyBehavior>();
             if (enemyController != null)
             {
                 bool useHeal = enemyController.currentHealth < 40;
-
                 if (useHeal)
                 {
                     enemyController.HealSelf();
@@ -165,7 +155,6 @@ public class TurnManager : MonoBehaviour
                 else
                 {
                     bool useRangedAttack = Random.Range(0f, 1f) > 0.5f;
-
                     if (useRangedAttack)
                     {
                         enemyController.PerformRangedAttack();
@@ -178,12 +167,11 @@ public class TurnManager : MonoBehaviour
                     }
                 }
             }
-
             yield return new WaitForSeconds(2f);
         }
-
         EndEnemyTurn();
     }
+
     public void EndEnemyTurn()
     {
         if (gameState == null)
@@ -191,42 +179,61 @@ public class TurnManager : MonoBehaviour
             Debug.LogError("GameState is null in EndEnemyTurn!");
             return;
         }
-
         gameState.AddTurn();
         StartPlayerTurn();
     }
-    public void RemoveEnemy(GameObject enemy)
-    {
-        EnemyBehavior enemyBehavior = enemy.GetComponent<EnemyBehavior>();
-        if (enemyBehavior != null)
-        {
-            enemyBehavior.isDefeated = true; // Mark as defeated
-            enemy.tag = "Untagged"; // Optionally remove tag
-        }
 
-        if (enemies.Contains(enemy))
-        {
-            enemies.Remove(enemy);
-            Debug.Log($"Enemy {enemy.name} removed. Remaining enemies: {enemies.Count}");
-            Destroy(enemy);
-        }
-        if(enemies.Count == 0)
-        {            
-            battleCount++;
-            startAndEndGame.NextBattle();
-            for(int i = 0; i<battleCount; i++)
-            {
-                SpawnEnemies();
-                enemyBehavior.StopAllCoroutines();
-            }
-            StartPlayerTurn();
-            state = TurnState.PlayerTurn;
-        }
+    public void RemoveEnemy(GameObject enemy)
+{
+    if (enemies.Contains(enemy))
+    {
+        enemies.Remove(enemy);
+        Debug.Log($"Enemy {enemy.name} removed. Remaining enemies: {enemies.Count}");
+        Destroy(enemy);
     }
 
-    public void HandleVictory()
+    if (enemies.Count == 0)
+    {
+        Debug.Log("All enemies defeated.");
+        StartCoroutine(HandleVictoryAndStartNextBattle());
+    }
+}
+
+    private void HandleVictory()
     {
         StopAllCoroutines();
+        PrepareToLoadEndScene();
+    }
+
+    private void PrepareToLoadEndScene()
+    {
+        bannerManager.ShowBanner("Victory!");
+        startAndEndGame.ShowVictoryScreen();
+    }
+    private IEnumerator HandleVictoryAndStartNextBattle()
+{
+    bannerManager.ShowBanner("Battle Won!");
+
+    yield return new WaitForSeconds(1.5f);
+    
+    battleCount++;
+    startAndEndGame.NextBattle();
+
+    state = TurnState.Idle;
+    yield return new WaitForSeconds(1f);
+    
+    state = TurnState.PlayerTurn;
+    SpawnEnemies();
+
+    StartCoroutine(StartNewPlayerTurnCycle());
+}
+
+    private IEnumerator StartNewPlayerTurnCycle()
+    {
+        state = TurnState.PlayerTurn;
+        yield return new WaitForSeconds(1f);
+        gameState.AddTurn();
+        StartPlayerTurn();
     }
 
     public void HandleDefeat()
@@ -236,57 +243,55 @@ public class TurnManager : MonoBehaviour
         gameState.YouDied();
         Debug.Log("You lost");
     }
-    
+
     public void AddEnemy(GameObject enemy)
     {
-            enemies.Add(enemy);
-            Debug.Log($"{enemy.name} added to the enemy list.");
+        enemies.Add(enemy);
+        Debug.Log($"{enemy.name} added to the enemy list.");
     }
+
     public void SpawnEnemies()
     {
-        // Clear the existing enemies
         foreach (GameObject enemy in enemies)
         {
             Destroy(enemy);
         }
         enemies.Clear();
 
-        // Calculate the number of enemies to spawn based on battle count
-        int enemyCount = Mathf.Min(battleCount, 3); // Max 3 enemies
-        Debug.Log($"Attempting to spawn {enemyCount} enemies.");
+        int enemyCount = battleCount;
+        if (battleCount > 3)
+        {
+            Debug.Log("No enemies to spawn for Battle #4.");
+            HandleVictory();
+            return;
+        }
+
+        Debug.Log($"Spawning {enemyCount} new enemies for Battle #{battleCount}.");
 
         List<Transform> availableSpawnPoints = new List<Transform>(spawnPoints);
 
         for (int i = 0; i < enemyCount; i++)
         {
-            // Check if there are available spawn points
             if (availableSpawnPoints.Count > 0)
             {
-                // Randomly select a spawn point and remove it from the list
                 int spawnIndex = Random.Range(0, availableSpawnPoints.Count);
                 Transform selectedSpawnPoint = availableSpawnPoints[spawnIndex];
                 availableSpawnPoints.RemoveAt(spawnIndex);
 
-                // Log the spawn position
-                Debug.Log($"Spawning enemy at position: {selectedSpawnPoint.position}");
-
-                // Instantiate the enemy at the selected spawn point
                 GameObject newEnemy = Instantiate(enemyPrefab, selectedSpawnPoint.position, Quaternion.identity);
-
                 EnemyBehavior enemyBehavior = newEnemy.GetComponent<EnemyBehavior>();
                 if (enemyBehavior != null)
                 {
                     enemyBehavior.turnManager = this;
                 }
-
-                AddEnemy(newEnemy);                
+                AddEnemy(newEnemy);
             }
             else
             {
-                Debug.LogWarning("No available spawn points left!");
+                Debug.LogWarning("No available spawn points left for enemies!");
             }
         }
+
+        Debug.Log("Enemies spawned. Transitioning to Player's turn.");
     }
-
-
 }

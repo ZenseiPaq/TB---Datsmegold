@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 7872324768209940700}
   - component: {fileID: 6431820625804236277}
   - component: {fileID: 4708355700724602678}
+  - component: {fileID: -3156293289114284098}
   m_Layer: 0
   m_Name: Warlock
   m_TagString: Untagged
@@ -139,6 +140,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.4400005, y: 7.380001, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-3156293289114284098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6078477990180867153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2c01b94ed90c2648a09588e27c4a2d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8772895822787340259
 GameObject:
   m_ObjectHideFlags: 0

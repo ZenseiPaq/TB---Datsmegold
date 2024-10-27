@@ -118,6 +118,7 @@ GameObject:
   - component: {fileID: 5132716165779657376}
   - component: {fileID: 1759650677463733335}
   - component: {fileID: 5239294736423820265}
+  - component: {fileID: 2948964387014875171}
   m_Layer: 0
   m_Name: Fighter
   m_TagString: Untagged
@@ -215,6 +216,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 5, y: 7.81, z: 0.7}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2948964387014875171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738592863155051334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2c01b94ed90c2648a09588e27c4a2d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8556295172253249320
 GameObject:
   m_ObjectHideFlags: 0

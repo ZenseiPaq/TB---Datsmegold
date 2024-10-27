@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -33,42 +34,16 @@ public class AudioSettingsManager : MonoBehaviour
         if (currentScene == "Start")
         {
             currentSongIndex = specificSongIndexForStartScene;
+            UpdateSongDisplay();
         }
         else
         {
             currentSongIndex = Random.Range(0, musicSources.Length);
+            UpdateSongDisplay();
         }
-
-        UpdateSongDisplay();
 
         leftArrow.onClick.AddListener(PreviousSong);
         rightArrow.onClick.AddListener(NextSong);
-    }
-
-    private void Update()
-    {
-        if (!musicSources[currentSongIndex].isPlaying)
-        {
-            PlayNextRandomSong();
-        }
-    }
-
-    private void SetMusicVolume(float volume)
-    {
-        foreach (var musicSource in musicSources)
-        {
-            musicSource.volume = volume;
-        }
-        PlayerPrefs.SetFloat("MusicVolume", volume);
-    }
-
-    private void SetSFXVolume(float volume)
-    {
-        foreach (AudioSource source in sfxSources)
-        {
-            source.volume = volume;
-        }
-        PlayerPrefs.SetFloat("SFXVolume", volume);
     }
 
     private void UpdateSongDisplay()
@@ -85,6 +60,17 @@ public class AudioSettingsManager : MonoBehaviour
         }
 
         musicSources[currentSongIndex].Play();
+        StartCoroutine(WaitForSongEnd());
+    }
+
+    private IEnumerator WaitForSongEnd()
+    {
+        while (musicSources[currentSongIndex].isPlaying)
+        {
+            yield return null;
+        }
+
+        PlayNextRandomSong();
     }
 
     public void NextSong()
@@ -110,5 +96,23 @@ public class AudioSettingsManager : MonoBehaviour
 
         currentSongIndex = newSongIndex;
         UpdateSongDisplay();
+    }
+
+    private void SetMusicVolume(float volume)
+    {
+        foreach (var musicSource in musicSources)
+        {
+            musicSource.volume = volume;
+        }
+        PlayerPrefs.SetFloat("MusicVolume", volume);
+    }
+
+    private void SetSFXVolume(float volume)
+    {
+        foreach (AudioSource source in sfxSources)
+        {
+            source.volume = volume;
+        }
+        PlayerPrefs.SetFloat("SFXVolume", volume);
     }
 }

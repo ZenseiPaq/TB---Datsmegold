@@ -22,6 +22,7 @@ public class StartAndEndGame : MonoBehaviour
     public GameObject optionsCanvas;
     public PlayerController playerController;
     public TextMeshProUGUI currentBattleText;
+    public TurnManager turnManager;
     public int currentBattle;
     void Start()
     {
@@ -61,9 +62,18 @@ public class StartAndEndGame : MonoBehaviour
 
     void Update()
     {
-        currentBattleText.text = ("Battle "+ currentBattle);
-        completionTime = Time.time - startTime;
-        UpdateUI();
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        if(currentScene.name == "Start")
+        {
+            return;
+        }
+        else
+        {
+            currentBattleText.text = ("Battle "+ currentBattle);
+            completionTime = Time.time - startTime;
+            UpdateUI();
+        }
     }
 
     public void AddTurn()
@@ -96,27 +106,30 @@ public class StartAndEndGame : MonoBehaviour
         if (timerText != null) timerText.text = "Time: " + Mathf.Floor(completionTime).ToString() + "s";
     }
     public void ShowVictoryScreen()
+{
+    if (victoryCanvas != null)
     {
-        if (victoryCanvas != null)
-        {
-            victoryCanvas.SetActive(true);
-            overlappingCanvas.SetActive(false);
-            normalCanvas.SetActive(true);
-            endScreenCanvas.SetActive(false);
+        victoryCanvas.SetActive(true);
+        overlappingCanvas.SetActive(false);
+        normalCanvas.SetActive(true);
+        endScreenCanvas.SetActive(false);
 
-            turnText.text = "Turn: " + turnNumber;
-            timerText.text = "Time: " + Mathf.Floor(completionTime).ToString() + "s";
+        turnText.text = "Turn: " + turnNumber;
+        timerText.text = "Time: " + Mathf.Floor(completionTime).ToString() + "s";
 
-            Time.timeScale = 0;
-        
-            Debug.Log("Victory screen displayed.");
-            StartCoroutine(GoToEndGame());
-        }
-        else
-        {
-            Debug.LogWarning("Victory canvas is not assigned!");
-        }
+        Time.timeScale = 0;
+
+        Debug.Log("Victory screen displayed.");
+
+        GameManager.Instance.SaveFinalStats(turnNumber, completionTime);
+
+        StartCoroutine(GoToEndGame());
     }
+    else
+    {
+        Debug.LogWarning("Victory canvas is not assigned!");
+    }
+}
     private IEnumerator GoToEndGame()
     {
         yield return new WaitForSecondsRealtime(3f);
@@ -132,6 +145,17 @@ public class StartAndEndGame : MonoBehaviour
     {
         optionsCanvas.SetActive(true);
         titleScreen.SetActive(false);
+    }
+    public void RetryGame()
+    {
+        turnNumber = 0;
+        completionTime = 0;
+        currentBattle = 0;
+
+        TurnManager.Instance.battleCount = 0;
+
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.name);
     }
     public void OnReturnButtonClicked()
     {
@@ -159,6 +183,15 @@ public class StartAndEndGame : MonoBehaviour
         else
         {
             titleScreen.SetActive(true);
+        }
+
+        if(titleScreen.activeSelf || optionsCanvas.activeSelf)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = 1;
         }
     }
 

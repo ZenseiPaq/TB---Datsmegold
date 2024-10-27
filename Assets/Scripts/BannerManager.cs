@@ -45,14 +45,25 @@ public class BannerManager : MonoBehaviour
     }
 
     IEnumerator Fade(float startAlpha, float endAlpha, float duration)
+{
+    CanvasGroup bannerCanvasGroup = GameObject.Find("TurnText").GetComponent<CanvasGroup>();
+    
+    if (bannerCanvasGroup == null)
     {
-        float elapsedTime = 0f;
-        while (elapsedTime < duration)
-        {
-            elapsedTime += Time.deltaTime;
-            bannerCanvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, elapsedTime / duration);
-            yield return null;
-        }
-        bannerCanvasGroup.alpha = endAlpha;
+        Debug.LogError("CanvasGroup not found on TurnText!");
+        yield break;
     }
+
+    float elapsedTime = 0f;
+    bannerCanvasGroup.alpha = startAlpha;
+
+    while (elapsedTime < duration)
+    {
+        elapsedTime += Time.deltaTime;
+        bannerCanvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, elapsedTime / duration);
+        yield return null;
+    }
+
+    bannerCanvasGroup.alpha = endAlpha;
+}
 }

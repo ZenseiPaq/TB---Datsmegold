@@ -31,7 +31,6 @@ public class EnemyBehavior : MonoBehaviour
     public GameObject WarlockSpell;
     public GameObject ArcherSpell;
     public bool isDefeated = false;
-    // Serialized fields to assign ScriptableObject abilities from the editor
     [SerializeField] private EnemyAbility meleeAttackAbility;
     [SerializeField] private EnemyAbility rangedAttackAbility;
     [SerializeField] private EnemyAbility healAbility;
@@ -246,31 +245,52 @@ public class EnemyBehavior : MonoBehaviour
     }
 
     public void EnemyTakeDamage(int damage)
+{
+    currentHealth -= damage;
+    if (currentHealth <= 0)
     {
-        currentHealth -= damage;
-        if (currentHealth <= 0)
-        {
-            // Destroy all child objects (e.g., models)
-            foreach (Transform child in transform)
-            {
-                Destroy(child.gameObject);
-            }
+        RegisterEnemyDeath();
 
-            StartCoroutine(CheckIfDefeated());
-            Debug.Log($"{gameObject.name} has been defeated.");
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
         }
-        Debug.Log($"{gameObject.name} took {damage} damage and has {currentHealth} HP left.");
+
+        StartCoroutine(CheckIfDefeated());
+        Debug.Log($"{gameObject.name} has been defeated.");
     }
+
+    Debug.Log($"{gameObject.name} took {damage} damage and has {currentHealth} HP left.");
+}
+private void RegisterEnemyDeath()
+{
+    switch (characterType)
+    {
+        case CharacterType.Archer:
+            GameManager.Instance.RegisterEnemyDeath("Archer");
+            break;
+        case CharacterType.Warlock:
+            GameManager.Instance.RegisterEnemyDeath("Warlock");
+            break;
+        case CharacterType.Barbarian:
+            GameManager.Instance.RegisterEnemyDeath("Barbarian");
+            break;
+        case CharacterType.Fighter:
+            GameManager.Instance.RegisterEnemyDeath("Fighter");
+            break;
+        default:
+            Debug.LogWarning("Unknown enemy type. Cannot register death.");
+            break;
+    }
+}
     private IEnumerator CheckIfDefeated()
-    {
-        // Wait a frame to ensure children are destroyed
-        yield return null;
+{
+    yield return null;
 
-        // Check if all children are destroyed
-        if (transform.childCount == 0)
-        {
-            Debug.Log($"{gameObject.name} has no remaining models and is considered fully defeated.");
-            turnManager.RemoveEnemy(gameObject);
-        }
+    if (transform.childCount == 0)
+    {
+        Debug.Log($"{gameObject.name} has no remaining models and is considered fully defeated.");
+        turnManager.RemoveEnemy(gameObject);
     }
+}
 }

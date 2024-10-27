@@ -118,8 +118,9 @@ GameObject:
   - component: {fileID: 6587811374085869211}
   - component: {fileID: 6296415959850523764}
   - component: {fileID: 2013939895663818777}
+  - component: {fileID: -4982227381760296897}
   m_Layer: 0
-  m_Name: Berserker
+  m_Name: Barbarian
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -215,6 +216,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 7.04, y: 7.75, z: 0.7}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-4982227381760296897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4364724867875339609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2c01b94ed90c2648a09588e27c4a2d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9112038712916442808
 GameObject:
   m_ObjectHideFlags: 0
