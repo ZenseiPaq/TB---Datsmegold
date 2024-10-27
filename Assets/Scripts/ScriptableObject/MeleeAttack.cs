@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Melee Attack Ability", menuName = "Abilities/MeleeAttack")]
 public class MeleeAttackAbility : EnemyAbility
 {
-    [SerializeField] private int damage; // Set this via the Inspector
+    [SerializeField] private int damage;
 
     public override void Use(GameObject target)
     {

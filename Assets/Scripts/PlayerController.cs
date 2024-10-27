@@ -28,8 +28,8 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        playerHealth = startHealth; // Initialize player health
-        UpdateHealthDisplay(); // Update health display at start
+        playerHealth = startHealth;
+        UpdateHealthDisplay();
         playerOverHealth.Stop();
         shieldPrefab.SetActive(false);
         startEndGame = FindObjectOfType<StartAndEndGame>();
@@ -99,7 +99,6 @@ public class PlayerController : MonoBehaviour
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         buttonParent.gameObject.SetActive(true);
 
-        // Clear previous buttons
         foreach (Transform child in buttonParent)
         {
             Destroy(child.gameObject);
@@ -108,7 +107,7 @@ public class PlayerController : MonoBehaviour
         for (int i = 0; i < enemies.Length; i++)
         {
             EnemyBehavior enemyBehavior = enemies[i].GetComponent<EnemyBehavior>();
-            if (enemyBehavior != null && !enemyBehavior.isDefeated) // Check if enemy is not defeated
+            if (enemyBehavior != null && !enemyBehavior.isDefeated)
             {
                 GameObject enemy = enemies[i];
                 GameObject newButton = Instantiate(enemyButtonPrefab, buttonParent);
@@ -116,7 +115,6 @@ public class PlayerController : MonoBehaviour
                 newButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -30 * i);
                 GameObject localEnemy = enemy;
 
-                // Add listener to select enemy and use ability
                 newButton.GetComponent<Button>().onClick.AddListener(() => SelectEnemy(localEnemy.transform));
             }
         }
@@ -133,7 +131,6 @@ public class PlayerController : MonoBehaviour
     {
         if (selectedAbility is GunshotAbility gunshotAbility && targetEnemy != null)
         {
-            // Call the Use method, passing the shoot point and the target enemy
             gunshotAbility.Use(shootPoint.transform, targetEnemy);
         }
         targetEnemy = null;
@@ -146,7 +143,7 @@ public class PlayerController : MonoBehaviour
         if (selectedAbility is HealAbility healAbility)
         {
             healAbility.Use(this);
-            UpdateHealthDisplay(); // Update health display after healing
+            UpdateHealthDisplay();
             turnManager.EndPlayerTurn();
         }
         else if (selectedAbility is ShieldAbility shieldAbility)
@@ -157,11 +154,11 @@ public class PlayerController : MonoBehaviour
 
     void RotateTowardsEnemy(Transform enemy)
     {
-        Vector3 direction = (enemy.position - transform.position).normalized; // Calculate direction to enemy
-        if (direction != Vector3.zero) // Ensure the direction is not zero to avoid issues
+        Vector3 direction = (enemy.position - transform.position).normalized;
+        if (direction != Vector3.zero)
         {
-            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z)); // Create rotation
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed); // Smoothly rotate
+            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
         }
     }
 
@@ -178,13 +175,11 @@ public class PlayerController : MonoBehaviour
             Debug.Log("I took " + damage + " damage");
         }
 
-        // Check for player defeat
         if (playerHealth <= 0)
         {
             turnManager.HandleDefeat();
         }
 
-        // Update health display after taking damage
         UpdateHealthDisplay();
 
         if (playerHealth > maxHealth)
@@ -195,7 +190,6 @@ public class PlayerController : MonoBehaviour
 
     public void UpdateHealthDisplay()
     {
-        // Update the health display text
         healthDisplay.text = $"Health: {playerHealth}/{maxHealth}";
 
 
@@ -219,7 +213,7 @@ public class PlayerController : MonoBehaviour
     public void Heal(int healing)
     {
         playerHealth += healing;
-        UpdateHealthDisplay(); // Update health display after healing
+        UpdateHealthDisplay();
     }
 
     public void SetShieldActive(int shieldPower)

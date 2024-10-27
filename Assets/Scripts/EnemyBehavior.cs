@@ -10,13 +10,11 @@ public class EnemyBehavior : MonoBehaviour
     public GameObject LazerObject;
     public string characterName;
 
-    // Character models
     public GameObject archerModel;
     public GameObject warlockModel;
     public GameObject barbarianModel;
     public GameObject fighterModel;
     private GameObject instantiatedModel;
-    // Character attributes
     public int maxHealth;
     public int currentHealth;
     public float moveSpeed;

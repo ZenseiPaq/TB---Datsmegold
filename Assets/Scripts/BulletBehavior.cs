@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class BulletBehavior : MonoBehaviour
 {
-    public float speed = 10f;  // Speed of the bullet
-    public int pDamage = 10;     // Damage dealt by the bullet
+    public float speed = 10f;
+    public int pDamage = 10;
     public int eDamage = 20;
     private Vector3 direction;   
 

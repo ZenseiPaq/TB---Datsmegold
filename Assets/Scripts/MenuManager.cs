@@ -10,26 +10,23 @@ public class MenuManager : MonoBehaviour
     public GameObject abilityButtonPrefab;
     public Transform abilityMenuParent;
     public List<Ability> playerAbilities;
-    public TextMeshProUGUI descriptionText;  // Text component to display ability descriptions
+    public TextMeshProUGUI descriptionText;
     public PlayerController playerController;
 
     public void ShowAbilityMenu()
     {
         abilityMenuParent.gameObject.SetActive(true);
 
-        // Clear previous buttons
         foreach (Transform child in abilityMenuParent)
         {
             Destroy(child.gameObject);
         }
 
-        // Instantiate buttons for each ability
         foreach (Ability ability in playerAbilities)
         {
             GameObject newButton = Instantiate(abilityButtonPrefab, abilityMenuParent);
             newButton.GetComponentInChildren<TextMeshProUGUI>().text = ability.abilityName;
 
-            // Add listeners for hover events to show/hide descriptions
             EventTrigger trigger = newButton.AddComponent<EventTrigger>();
 
             EventTrigger.Entry pointerEnter = new EventTrigger.Entry();
@@ -42,7 +39,6 @@ public class MenuManager : MonoBehaviour
             pointerExit.callback.AddListener((eventData) => HideAbilityDescription());
             trigger.triggers.Add(pointerExit);
 
-            // Add a listener to handle ability selection when clicked
             newButton.GetComponent<Button>().onClick.AddListener(() => SelectAbility(ability));
         }
     }
@@ -70,13 +66,11 @@ public class MenuManager : MonoBehaviour
         HideAbilityMenu();
     }
 
-    // Method to show ability description
     public void ShowAbilityDescription(Ability ability)
     {
         descriptionText.text = ability.description;
     }
 
-    // Method to hide ability description
     public void HideAbilityDescription()
     {
         descriptionText.text = "";
