@@ -1041,6 +1041,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2365612312290727073, guid: 5e24a36b76ac7814bb5fc6ae9749a6e6, type: 3}
+      propertyPath: startHealth
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2365612312290727073, guid: 5e24a36b76ac7814bb5fc6ae9749a6e6, type: 3}
       propertyPath: turnManager
       value: 
       objectReference: {fileID: 1609195787}
@@ -5702,6 +5706,7 @@ MonoBehaviour:
   optionsCanvas: {fileID: 898402156}
   playerController: {fileID: 2112652126}
   currentBattleText: {fileID: 838135892}
+  turnManager: {fileID: 0}
   currentBattle: 1
 --- !u!4 &1305807037
 Transform:
@@ -6500,7 +6505,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1305807036}
         m_TargetAssemblyTypeName: StartAndEndGame, Assembly-CSharp
-        m_MethodName: OnStartButtonClicked
+        m_MethodName: RetryGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
